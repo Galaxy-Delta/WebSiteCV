@@ -28,13 +28,13 @@
 
     /* ===== NAVIGAATIO ===== */
     .navbar {
-      overflow: visible;          /* dropdown ei leikkaannu */
+      overflow: visible;
       background-color: silver;
       border-top: 1px solid #666;
       border-bottom: 1px solid #666;
       position: sticky;
       top: 0;
-      z-index: 3000;              /* nousee iframen yläpuolelle */
+      z-index: 3000;
     }
     .navbar::after { content: ""; display: table; clear: both; }
 
@@ -65,9 +65,7 @@
       cursor: pointer;
     }
 
-    .navbar a:hover, .dropdown:hover .dropbtn {
-      background-color: #666;
-    }
+    .navbar a:hover, .dropdown:hover .dropbtn { background-color: #666; }
 
     .dropdown-content {
       display: none;
@@ -157,11 +155,7 @@
       display: block;
     }
 
-    .hint {
-      font-size: 13px;
-      color: #ccc;
-      margin-top: 8px;
-    }
+    .hint { font-size: 13px; color: #ccc; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -188,8 +182,13 @@
       </div>
     </div>
 
-    <!-- --- CV (suora linkki, ei dropdownia) --- -->
-    <a href="cv/">CV</a>
+    <!-- --- CV (dropdown → cv/index.html) --- -->
+    <div class="dropdown">
+      <button class="dropbtn">CV</button>
+      <div class="dropdown-content">
+        <a href="cv/index.html">Avaa CV</a>
+      </div>
+    </div>
 
     <!-- --- Projektit --- -->
     <div class="dropdown">
@@ -254,7 +253,7 @@
           </iframe>
         </div>
         <p class="hint">
-          Kehityksessä <code>parent=localhost</code> toimii. Julkaistessa vaihda esim. <code>parent=galaxy-delta.github.io</code> (tai oma domain).
+          Kehityksessä <code>parent=localhost</code> toimii. Julkaistessa vaihda <code>parent=galaxy-delta.github.io</code> (tai oma domain).
           Klipin embed: <code>https://clips.twitch.tv/embed?clip=KLIPIN_ID&parent=OMA_DOMAIN</code>
         </p>
       </div>
