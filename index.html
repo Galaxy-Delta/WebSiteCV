@@ -2,7 +2,7 @@
 <html lang="fi">
 <head>
   <meta charset="utf-8">
-  <title>DeltaINC</title>
+  <title>CV — DeltaINC</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -10,6 +10,9 @@
   <div class="logo">DeltaINC</div>
 
   <div class="navbar">
+    <!-- Linkki hubiin (vaihda tiedostonimi jos eri) -->
+    <a href="OmaWEB.html">Etusivu</a>
+
     <!-- Blender -->
     <div class="dropdown">
       <button class="dropbtn">Blender</button>
@@ -26,77 +29,19 @@
       </div>
     </div>
 
-    <!-- CV (dropdown → cv/index.html) -->
+    <!-- CV (tämä sivu) -->
     <div class="dropdown">
       <button class="dropbtn">CV</button>
       <div class="dropdown-content">
-        <a href="cv/index.html">Avaa CV</a>
-      </div>
-    </div>
-
-    <!-- Projektit -->
-    <div class="dropdown">
-      <button class="dropbtn">Projektit</button>
-      <div class="dropdown-content">
-        <a href="#">Peliprojektit</a>
-        <a href="https://galaxy-delta.itch.io/" target="_blank" rel="noopener">Itchio-sivu</a>
-      </div>
-    </div>
-
-    <!-- Somet -->
-    <div class="dropdown">
-      <button class="dropbtn">Somet</button>
-      <div class="dropdown-content">
-        <a href="https://www.youtube.com/@PelataanJ/videos" target="_blank" rel="noopener">YouTube</a>
-        <a href="https://www.twitch.tv/galaxy_delta" target="_blank" rel="noopener">Twitch</a>
-      </div>
-    </div>
-
-    <!-- Yhteystiedot -->
-    <div class="dropdown">
-      <button class="dropbtn">Yhteystiedot</button>
-      <div class="dropdown-content">
-        <a href="mailto:jep.knuutinen@gmail.com">Sähköposti</a>
+        <a href="./">Avaa CV (tässä)</a>
       </div>
     </div>
   </div>
 
-  <section class="section">
-    <h2 class="section-title">Somet & Editointi</h2>
-
-    <div class="social-grid">
-      <div class="card">
-        <h3>YouTube – viimeisin editointi</h3>
-        <div class="ratio">
-          <iframe
-            src="https://www.youtube.com/embed/gqEJaH9o4bc"
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen>
-          </iframe>
-        </div>
-        <p class="hint">
-          My video editing skills: This is a showcase of my editing. Even though this was a few years ago, my skills have improved.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>Twitch – live / klippi</h3>
-        <div class="ratio">
-          <!-- Julkaisussa vaihda parent vastaamaan domainiasi, esim. parent=galaxy-delta.github.io -->
-          <iframe
-            src="https://player.twitch.tv/?channel=galaxy_delta&parent=localhost"
-            allowfullscreen>
-          </iframe>
-        </div>
-        <p class="hint">
-          Kehityksessä <code>parent=localhost</code>. Julkaistessa vaihda <code>parent=galaxy-delta.github.io</code> (tai oma domain).
-          Klipin embed: <code>https://clips.twitch.tv/embed?clip=KLIPIN_ID&parent=OMA_DOMAIN</code>
-        </p>
-      </div>
-    </div>
-  </section>
+  <main class="section">
+    <h1 class="section-title">CV</h1>
+    <!-- CV-sisältö tähän -->
+  </main>
 
 </body>
 </html>
