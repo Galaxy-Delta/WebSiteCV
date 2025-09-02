@@ -1,12 +1,25 @@
-/* ===== BODY & TAUSTA ===== */
-body {
-  background: linear-gradient(-45deg, #2c2c2c, #3a3a3a, #4a4a4a, #2c2c2c);
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
+/* ===== BODY & TAUSTA (etusivu + CV-index kun <body class="home-bg">) ===== */
+.home-bg {
+  position: relative;
+  z-index: 0;
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
   color: #eee;
+}
+
+.home-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  /* Hitaasti liikkuva tumma gradientti */
+  background: linear-gradient(-45deg, #2c2c2c, #3a3a3a, #4a4a4a, #2c2c2c);
+  background-size: 400% 400%;
+  animation: gradientBG 18s ease infinite;
+  opacity: 1;
 }
 
 @keyframes gradientBG {
