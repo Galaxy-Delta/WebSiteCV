@@ -1,3 +1,20 @@
+/* ===== BODY & TAUSTA ===== */
+body {
+  background: linear-gradient(-45deg, #2c2c2c, #3a3a3a, #4a4a4a, #2c2c2c);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #eee;
+}
+
+@keyframes gradientBG {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* ===== DROPDOWNIT ===== */
 .dropdown {
   float:left;
