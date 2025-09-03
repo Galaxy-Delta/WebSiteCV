@@ -21,6 +21,19 @@ html::before{
   animation: gradientBG 18s ease infinite;
   z-index: -1;
 }
+.logo{
+  text-align:center;
+  font-size:64px;
+  font-weight:700;
+  color:silver;
+  text-shadow:3px 3px 8px rgba(0,0,0,.6);
+  letter-spacing:4px;
+  padding:30px 0;
+}
+@media (max-width:600px){
+  .logo{ font-size:42px; padding:20px 0; letter-spacing:2px; }
+}
+
 /* Ja poista/kommentoi body::before, jos siirrät sen html::beforeksi */
 
 /* 2) Sticky-nav kompensointi vieritykselle */
@@ -119,3 +132,4 @@ html::before{
     transition: none !important;
   }
 }
+
