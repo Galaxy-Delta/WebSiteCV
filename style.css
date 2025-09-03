@@ -101,5 +101,26 @@ body::before{
 
 .card h3{margin:6px 0 12px;color:#fff;font-size:18px;letter-spacing:.5px}
 .ratio{position:relative;width:100%;padding-top:56.25%;border-radius:8px;overflow:hidden;background:#222}
+
 .ratio iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 .hint{font-size:13px;color:#ccc;margin-top:8px}
+/* Pakota läpinäkyvä tausta, jotta gradientti näkyy etusivulla ja CV:ssä */
+html, body { background-color: transparent !important; }
+
+/* Jelly / wobble -efekti vain CV-sivulle */
+@keyframes jelly {
+  0%   { transform: scale(1,1) }
+  30%  { transform: scale(1.1,.9) }
+  40%  { transform: scale(.95,1.05) }
+  50%  { transform: scale(1.03,.97) }
+  65%  { transform: scale(1.01,.99) }
+  100% { transform: scale(1,1) }
+}
+
+/* Aktivointi: kun body:ssa on class="cv" */
+.cv .section-title:hover,
+.cv .dropbtn:hover {
+  animation: jelly .6s ease;
+  display: inline-block;
+}
+
