@@ -51,7 +51,7 @@ body::before{
   font-family:inherit;margin:0;cursor:pointer
 }
 
-/* UUSI: kevyt liuku hoveriin */
+/* kevyt liuku hoveriin */
 .navbar a:hover,.dropdown:hover .dropbtn{
   background:linear-gradient(90deg,#777,#555);
 }
@@ -123,4 +123,5 @@ html, body { background-color: transparent !important; }
   animation: jelly .6s ease;
   display: inline-block;
 }
+
 
