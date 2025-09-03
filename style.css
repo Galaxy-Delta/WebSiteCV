@@ -44,11 +44,7 @@ html::before{
   scroll-margin-top: 70px; /* UUSI */
 }
 
-/* 3) Jelly ilman layout-hyppyä */
-.cv .dropbtn { 
-  display: inline-block; 
-  line-height: 1; /* UUSI: estää pienen korkeushyppelyn */
-}
+/* 3) Jelly – siirretty line-height perussääntöön .dropdown .dropbtn */
 .cv .dropbtn:hover { animation: jelly .6s ease; }
 
 /* 4) Dropdown – sulavampi (valinnainen) */
@@ -64,6 +60,7 @@ html::before{
   opacity: 0; pointer-events: none;
   visibility: hidden; /* UUSI */
   will-change: transform, opacity; /* UUSI suorituskykyvihje */
+  transition: transform .2s ease, opacity .2s ease; /* UUSI: pehmeä sulkeutuminen */
 }
 
 /* Näkyviin hoverilla */
@@ -114,6 +111,8 @@ html::before{
   font-size: 16px; border: none; outline: none; color: #fff;
   padding: 14px 16px; background-color: inherit; font-family: inherit;
   margin: 0; cursor: pointer;
+  display: inline-block;     /* ← siirretty tänne */
+  line-height: 1;            /* ← siirretty tänne (yhtenäinen kaikilla sivuilla) */
 }
 
 /* --- Söpö “bounce” --- */
@@ -132,4 +131,3 @@ html::before{
     transition: none !important;
   }
 }
-
