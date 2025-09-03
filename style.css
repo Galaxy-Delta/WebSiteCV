@@ -65,3 +65,41 @@ html::before{
 .navbar a:focus-visible, .dropbtn:focus-visible, .dropdown-content a:focus-visible{
   outline:2px solid #bbb; outline-offset:2px;
 }
+/* --- NAVBAR: sticky + z-index + clearfix --- */
+.navbar{
+  overflow: visible;
+  background-color: #444;
+  border-top: 1px solid #666;
+  border-bottom: 1px solid #666;
+  position: sticky;
+  top: 0;
+  z-index: 3000;
+}
+.navbar::after{ content:""; display: table; clear: both; }
+
+/* --- Dropdown-perus: kontti + nappi --- */
+.dropdown{ float: left; overflow: visible; position: relative; }
+.dropdown .dropbtn{
+  font-size: 16px; border: none; outline: none; color: #fff;
+  padding: 14px 16px; background-color: inherit; font-family: inherit;
+  margin: 0; cursor: pointer;
+}
+
+/* --- Dropdown näkyviin + pomppu-animaatio --- */
+.dropdown:hover .dropdown-content{
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transform: scaleY(1);                 /* ← pakota auki tilaan */
+  animation: dropdownBounce .5s ease forwards;
+}
+
+/* --- Söpö “bounce” --- */
+@keyframes dropdownBounce{
+  0%   { transform: scaleY(0) }
+  60%  { transform: scaleY(1.05) }
+  80%  { transform: scaleY(0.95) }
+  100% { transform: scaleY(1) }
+}
+
+
