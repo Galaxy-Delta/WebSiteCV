@@ -1,11 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="fi">
 <head>
   <meta charset="utf-8">
   <title>DeltaINC</title>
-   <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- mobiili -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
+
+  <!-- Plausible perus-skripti (vaihda domain) -->
+  <script defer data-domain="OMA-DOMAIN.FI" src="https://plausible.io/js/script.js"></script>
 
   <style>
     /* ===== BODY & TAUSTA ===== */
@@ -19,12 +21,9 @@
 
     /* ===== LOGO ===== */
     .logo {
-      
-      display: block;          
-      width: max-content;      
-      margin: 30px auto;    
-      text-align: center;
-      
+      display: block;
+      width: max-content;
+      margin: 30px auto;
       text-align: center;
       font-size: 64px;
       font-weight: 700;
@@ -72,7 +71,6 @@
       margin: 0;
       cursor: pointer;
     }
-
     .navbar a:hover, .dropdown:hover .dropbtn { background-color: #666; }
 
     .dropdown-content {
@@ -100,7 +98,7 @@
     .dropdown-content a:hover { background-color: #ddd; }
     .dropdown:hover .dropdown-content { display: block; }
 
-    /* ===== SISÄLTÖ / SOMET-OSIO ===== */
+    /* ===== SISÄLTÖ ===== */
     .section {
       max-width: 1100px;
       margin: 32px auto;
@@ -173,8 +171,8 @@
 
   <!-- ===== NAVIGAATIO ALKU ===== -->
   <div class="navbar">
-<!-- --- HomePage --- -->
-     <div class="dropdown">
+    <!-- --- HomePage --- -->
+    <div class="dropdown">
       <button class="dropbtn">HomePage</button>
       <div class="dropdown-content">
         <a href="OmaWEB.html">HomePage</a>
@@ -197,7 +195,7 @@
       </div>
     </div>
 
-    <!-- --- CV (dropdown → cv/index.html) --- -->
+    <!-- --- CV --- -->
     <div class="dropdown">
       <button class="dropbtn">CV</button>
       <div class="dropdown-content">
@@ -205,7 +203,7 @@
       </div>
     </div>
 
-    <!-- --- Projektit --- -->
+    <!-- --- Projects --- -->
     <div class="dropdown">
       <button class="dropbtn">Projects</button>
       <div class="dropdown-content">
@@ -230,9 +228,21 @@
         <a href="mailto:jep.knuutinen@gmail.com">E-mail</a>
       </div>
     </div>
-
   </div>
   <!-- ===== NAVIGAATIO LOPPU ===== -->
+
+  <!-- ===== STATS -OSIO ===== -->
+  <section class="section">
+    <h2 class="section-title">Site stats (last 30 days)</h2>
+
+    <div class="card" id="stats-card">
+      <h3>Live overview</h3>
+      <div id="pv">Kävijöitä: …</div>
+      <div id="avg">Keskimääräinen aika: …</div>
+      <div id="top5">Top maat: …</div>
+      <p class="hint">Data: Plausible Analytics (privacy-friendly, no cookies).</p>
+    </div>
+  </section>
 
   <!-- ===== SOMET & EDITOINTI -OSIO ===== -->
   <section class="section">
@@ -257,42 +267,66 @@
         </p>
       </div>
 
-      <!-- --- Twitch Upotus --- -->
       <div class="card">
-        <h3>Twitch – live / klippi</h3>
+        <h3>Twitch – clip</h3>
         <div class="ratio">
-          <!-- Julkaisussa vaihda parent vastaamaan domainiasi, esim. parent=galaxy-delta.github.io -->
+          
           <iframe
-            src="https://www.twitch.tv/galaxy_delta/clip/ConsiderateVivaciousCatTheTarFu-MNJxVbyPMQ8lhCyv?filter=clips&range=all&sort=time"
+            src="https://clips.twitch.tv/embed?clip=ConsiderateVivaciousCatTheTarFu-MNJxVbyPMQ8lhCyv&parent=OMA-DOMAIN.FI"
             allowfullscreen>
           </iframe>
         </div>
         <p class="hint">
-          <code>parent=localhost</code> <code>parent=galaxy-delta.github.io</code>
-          Klipin embed: <code>https://www.twitch.tv/galaxy_delta/clip/ConsiderateVivaciousCatTheTarFu-MNJxVbyPMQ8lhCyv?filter=clips&range=all&sort=time/code>
+          Esim: <code>https://clips.twitch.tv/embed?clip=CLIP_ID&amp;parent=OMA-DOMAIN.FI</code>
         </p>
       </div>
 
     </div>
   </section>
 
+  <!-- ===== PLAUSIBLE STATS -SCRIPTI ===== -->
+  <script>
+  (async () => {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer PLAUSIBLE_API_TOKEN' // read-only token
+    };
+
+    // Kokonaiskävijät + keskim. käyntiaika
+    const q1 = await fetch('https://plausible.io/api/v2/query', {
+      method: 'POST', headers,
+      body: JSON.stringify({
+        site_id: 'OMA-DOMAIN.FI',
+        period: '30d',
+        metrics: ['visitors','visit_duration']
+      })
+    }).then(r => r.ok ? r.json() : null).catch(() => null);
+
+    // Top 5 maata
+    const q2 = await fetch('https://plausible.io/api/v2/query', {
+      method: 'POST', headers,
+      body: JSON.stringify({
+        site_id: 'OMA-DOMAIN.FI',
+        period: '30d',
+        metrics: ['visitors'],
+        dimensions: ['country'],
+        sort: ['-visitors'],
+        limit: 5
+      })
+    }).then(r => r.ok ? r.json() : null).catch(() => null);
+
+    const visitors = q1?.results?.[0]?.visitors ?? 0;
+    const avgSec   = Math.round(q1?.results?.[0]?.visit_duration ?? 0);
+    const mm = String(Math.floor(avgSec/60)).padStart(2,'0');
+    const ss = String(avgSec%60).padStart(2,'0');
+
+    document.getElementById('pv').textContent  = `Kävijöitä: ${visitors}`;
+    document.getElementById('avg').textContent = `Keskimääräinen aika: ${mm}:${ss}`;
+
+    const countries = (q2?.results ?? []).map(r => `${r.country}: ${r.visitors}`).join(', ');
+    document.getElementById('top5').textContent = `Top maat: ${countries || '—'}`;
+  })();
+  </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
