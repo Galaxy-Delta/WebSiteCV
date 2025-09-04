@@ -7,7 +7,7 @@ body{
   margin: 0;
   padding: 0;
   color: #eee;
-  background: transparent; /* tausta hoidetaan ::before:lla */
+  background: transparent; 
 }
 
 /* Heijastava metallitausta liikkuvalla valolla */
@@ -158,3 +158,4 @@ html::before{
     transition: none !important;
   }
 }
+
