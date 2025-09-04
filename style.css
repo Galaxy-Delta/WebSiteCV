@@ -51,13 +51,17 @@ html::before{
 
 /* Logo */
 .logo{
-  text-align:center;
-  font-size:64px;
-  font-weight:700;
-  color:silver;
-  text-shadow:3px 3px 8px rgba(0,0,0,.6);
-  letter-spacing:4px;
-  padding:30px 0;
+  display: block;          /* keskitys mahdolliseksi */
+  width: max-content;      /* mitoitetaan tekstin mukaan */
+  margin: 30px auto;       /* vaakakeskitys */
+  text-align: center;
+
+  font-size: 64px;
+  font-weight: 700;
+  color: silver;           /* 'gray17' ei ole validi väri */
+  text-shadow: 3px 3px 8px black;
+  letter-spacing: 4px;
+  padding: 30px 0;
 }
 @media (max-width:600px){
   .logo{ font-size:42px; padding:20px 0; letter-spacing:2px; }
@@ -158,5 +162,6 @@ html::before{
     transition: none !important;
   }
 }
+
 
 
