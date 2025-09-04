@@ -324,12 +324,13 @@
     document.getElementById('avg').textContent = `Avrage Time Spend: ${mm}:${ss}`;
 
     const countries = (q2?.results ?? []).map(r => `${r.country}: ${r.visitors}`).join(', ');
-    document.getElementById('top5').textContent = `Top maat: ${countries || '—'}`;
+    document.getElementById('top5').textContent = `Top countrys: ${countries || '—'}`;
   })();
   </script>
 
 </body>
 </html>
+
 
 
 
