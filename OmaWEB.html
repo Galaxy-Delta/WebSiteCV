@@ -320,8 +320,8 @@
     const mm = String(Math.floor(avgSec/60)).padStart(2,'0');
     const ss = String(avgSec%60).padStart(2,'0');
 
-    document.getElementById('pv').textContent  = `Kävijöitä: ${visitors}`;
-    document.getElementById('avg').textContent = `Keskimääräinen aika: ${mm}:${ss}`;
+    document.getElementById('pv').textContent  = `Visitors: ${visitors}`;
+    document.getElementById('avg').textContent = `Avrage Time Spend: ${mm}:${ss}`;
 
     const countries = (q2?.results ?? []).map(r => `${r.country}: ${r.visitors}`).join(', ');
     document.getElementById('top5').textContent = `Top maat: ${countries || '—'}`;
@@ -330,5 +330,6 @@
 
 </body>
 </html>
+
 
 
