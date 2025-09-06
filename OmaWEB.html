@@ -279,54 +279,26 @@
   <!-- ===== PLAUSIBLE STATS -SCRIPTI ===== -->
   <script>
 (async () => {
-  const headers = {
-    "Content-Type": "application/json",
-    // SUOSITUS: älä laita tuotantoon tokenia julkiseen fronttiin.
-    // Jos testaat, korvaa tähän oma read-only token:
-    "Authorization": "Bearer YOUR_PLAUSIBLE_READONLY_TOKEN"
-  };
-
+  // Vaihda tämä omaan shared link -domainiin
   const siteId = "galaxy-delta.github.io/WebSiteCV";
 
-  // Kokonaiskävijät + kesk. käyntiaika (30 päivää)
-  const q1 = await fetch("https://plausible.io/api/v2/query", {
-    method: "POST",
-    headers,
-    body: JSON.stringify({
-      site_id: siteId,
-      period: "30d",
-      metrics: ["visitors", "visit_duration"]
-    })
-  }).then(r => r.ok ? r.json() : null).catch(() => null);
+  // Public stats endpoint (ei tarvi tokenia)
+  const res = await fetch(`https://plausible.io/api/v1/stats/aggregate?site_id=${encodeURIComponent(siteId)}&period=30d&metrics=visitors,visit_duration`);
+  const data = await res.json();
 
-  // Top 5 countries (30 päivää)
-  const q2 = await fetch("https://plausible.io/api/v2/query", {
-    method: "POST",
-    headers,
-    body: JSON.stringify({
-      site_id: siteId,
-      period: "30d",
-      metrics: ["visitors"],
-      dimensions: ["country"],
-      sort: ["-visitors"],
-      limit: 5
-    })
-  }).then(r => r.ok ? r.json() : null).catch(() => null);
-
-  const visitors = q1?.results?.[0]?.visitors ?? 0;
-  const avgSec   = Math.round(q1?.results?.[0]?.visit_duration ?? 0);
+  const visitors = data?.results?.visitors?.value ?? 0;
+  const avgSec   = Math.round(data?.results?.visit_duration?.value ?? 0);
   const mm = String(Math.floor(avgSec / 60)).padStart(2, "0");
   const ss = String(avgSec % 60).padStart(2, "0");
 
   document.getElementById("pv").textContent  = `Visitors: ${visitors}`;
   document.getElementById("avg").textContent = `Average time spent: ${mm}:${ss}`;
 
-  const countries = (q2?.results ?? [])
-    .map(r => `${r.country}: ${r.visitors}`)
-    .join(", ");
-  document.getElementById("top5").textContent = `Top countries: ${countries || "—"}`;
+  // Top countries ei ole saatavilla ilman private API:ta
+  document.getElementById("top5").textContent = `Top countries: use shared link dashboard`;
 })();
 </script>
+
 
 
 
