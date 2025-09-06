@@ -239,19 +239,25 @@
     </figcaption>
   </figure>
 
-  <!-- 2: JAMGUY (korjattu) -->
+<!-- 2: JAMGUY (base käytössä) -->
 <figure class="figure">
   <a class="thumb" href="#img02">
     <img
-      src="/WebSiteCV/Pictures/jamguy.png"
+      src="Pictures/jamguy.png"
       alt="JamGuy-hahmo game jamia varten"
-      loading="lazy" decoding="async">
+      loading="lazy" decoding="async"
+      onerror="this.style.outline='3px solid #f33'; console.error('Image not found:', this.src)">
   </a>
   <figcaption class="meta">
     <h4>JamGuy — Finnish College Game Jam</h4>
     <p>place holder txt</p>
   </figcaption>
 </figure>
+
+<div id="img02" class="lightbox">
+  <a class="close" href="#">✕</a>
+  <img src="Pictures/jamguy.png" alt="JamGuy — suurennos">
+</div>
 
 
   <!-- 3: LANKAKONE -->
@@ -352,6 +358,7 @@
 </div>
 
   
+
 
 
 
