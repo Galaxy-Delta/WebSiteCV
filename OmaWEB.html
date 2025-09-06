@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 
-  <!-- Plausible perus-skripti (vaihda domain) -->
-  <script defer data-domain="OMA-DOMAIN.FI" src="https://plausible.io/js/script.js"></script>
+  <!-- Plausible Analytics -->
+  <script defer data-domain="galaxy-delta.github.io/WebSiteCV" src="https://plausible.io/js/script.js"></script>
 
   <style>
     /* ===== BODY & TAUSTA ===== */
@@ -169,7 +169,7 @@
   <!-- ===== LOGO ===== -->
   <div class="logo">DeltaINC</div>
 
-  <!-- ===== NAVIGAATIO ALKU ===== -->
+  <!-- ===== NAVIGAATIO ===== -->
   <div class="navbar">
     <!-- --- HomePage --- -->
     <div class="dropdown">
@@ -221,19 +221,18 @@
       </div>
     </div>
   </div>
-  <!-- ===== NAVIGAATIO LOPPU ===== -->
 
   <!-- ===== STATS -OSIO ===== -->
   <section class="section">
     <h2 class="section-title">Site stats (last 30 days)</h2>
 
     <div class="card" id="stats-card">
-  <h3>Website Statistics</h3>
-  <div id="pv">Visitors: …</div>
-  <div id="avg">Average time: …</div>
-  <div id="top5">Top countries: …</div>
-  <p class="hint">Source: Plausible Analytics (privacy-friendly, no cookies).</p>
-</div>
+      <h3>Website Statistics</h3>
+      <div id="pv">Visitors: …</div>
+      <div id="avg">Average time: …</div>
+      <div id="top5">Top countries: …</div>
+      <p class="hint">Source: Plausible Analytics (privacy-friendly, no cookies).</p>
+    </div>
   </section>
 
   <!-- ===== SOMET & EDITOINTI -OSIO ===== -->
@@ -259,68 +258,50 @@
         </p>
       </div>
 
+      <!-- --- Twitch Clip --- -->
       <div class="card">
         <h3>Twitch – clip</h3>
         <div class="ratio">
-          
           <iframe
-            src="https://clips.twitch.tv/embed?clip=ConsiderateVivaciousCatTheTarFu-MNJxVbyPMQ8lhCyv&parent=OMA-DOMAIN.FI"
+            src="https://clips.twitch.tv/embed?clip=ConsiderateVivaciousCatTheTarFu-MNJxVbyPMQ8lhCyv&parent=galaxy-delta.github.io"
             allowfullscreen>
           </iframe>
         </div>
         <p class="hint">
-          Esim: <code>https://clips.twitch.tv/embed?clip=CLIP_ID&amp;parent=OMA-DOMAIN.FI</code>
+          Esim: <code>https://clips.twitch.tv/embed?clip=CLIP_ID&amp;parent=galaxy-delta.github.io</code>
         </p>
       </div>
 
     </div>
   </section>
 
-  <!-- ===== PLAUSIBLE STATS -SCRIPTI ===== -->
-<script>
-(async () => {
-  // Sivuston domain GitHub Pagesissa
-  const siteId = "galaxy-delta.github.io/WebSiteCV";
+  <!-- ===== PLAUSIBLE STATS -SCRIPT ===== -->
+  <script>
+  (async () => {
+    const siteId = "galaxy-delta.github.io/WebSiteCV";
 
-  try {
-    // Hakee Plausiblen public stats (ei tarvi tokenia)
-    const res = await fetch(`https://plausible.io/api/v1/stats/aggregate?site_id=${encodeURIComponent(siteId)}&period=30d&metrics=visitors,visit_duration`);
-    if (!res.ok) throw new Error("Fetch failed");
+    try {
+      const res = await fetch(`https://plausible.io/api/v1/stats/aggregate?site_id=${encodeURIComponent(siteId)}&period=30d&metrics=visitors,visit_duration`);
+      if (!res.ok) throw new Error("Fetch failed");
 
-    const data = await res.json();
+      const data = await res.json();
 
-    // Kävijät
-    const visitors = data.results.visitors.value || 0;
+      const visitors = data.results.visitors.value || 0;
+      const avgSec = Math.round(data.results.visit_duration.value || 0);
+      const mm = String(Math.floor(avgSec / 60)).padStart(2, "0");
+      const ss = String(avgSec % 60).padStart(2, "0");
 
-    // Keskimääräinen aika
-    const avgSec = Math.round(data.results.visit_duration.value || 0);
-    const mm = String(Math.floor(avgSec / 60)).padStart(2, "0");
-    const ss = String(avgSec % 60).padStart(2, "0");
+      document.getElementById("pv").textContent  = `Visitors (30d): ${visitors}`;
+      document.getElementById("avg").textContent = `Average time spent: ${mm}:${ss}`;
+      document.getElementById("top5").textContent = "Top countries: (only via shared dashboard)";
+    } catch (err) {
+      console.error("Plausible fetch error:", err);
+      document.getElementById("pv").textContent  = "Visitors: —";
+      document.getElementById("avg").textContent = "Average time spent: —";
+      document.getElementById("top5").textContent = "Top countries: —";
+    }
+  })();
+  </script>
 
-    // Näytä tiedot sivulla
-    document.getElementById("pv").textContent  = `Visitors (30d): ${visitors}`;
-    document.getElementById("avg").textContent = `Average time spent: ${mm}:${ss}`;
-    document.getElementById("top5").textContent = "Top countries: (only via shared dashboard)";
-  } catch (err) {
-    console.error("Plausible fetch error:", err);
-    document.getElementById("pv").textContent  = "Visitors: —";
-    document.getElementById("avg").textContent = "Average time spent: —";
-    document.getElementById("top5").textContent = "Top countries: —";
-  }
-})();
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</body>
+</html>
