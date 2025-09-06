@@ -278,50 +278,56 @@
 
   <!-- ===== PLAUSIBLE STATS -SCRIPTI ===== -->
   <script>
-  (async () => {
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer PLAUSIBLE_API_TOKEN' // read-only token
-    };
+(async () => {
+  const headers = {
+    "Content-Type": "application/json",
+    // SUOSITUS: älä laita tuotantoon tokenia julkiseen fronttiin.
+    // Jos testaat, korvaa tähän oma read-only token:
+    "Authorization": "Bearer YOUR_PLAUSIBLE_READONLY_TOKEN"
+  };
 
-    // Kokonaiskävijät + keskim. käyntiaika
-    const q1 = await fetch('https://plausible.io/api/v2/query', {
-      method: 'POST', headers,
-      body: JSON.stringify({
-        site_id: 'https://galaxy-delta.github.io/WebSiteCV/OmaWEB.html#',
-        period: '30d',
-        metrics: ['visitors','visit_duration']
-      })
-    }).then(r => r.ok ? r.json() : null).catch(() => null);
+  const siteId = "galaxy-delta.github.io/WebSiteCV";
 
-    // Top 5 maata
-    const q2 = await fetch('https://plausible.io/api/v2/query', {
-      method: 'POST', headers,
-      body: JSON.stringify({
-        site_id: 'https://galaxy-delta.github.io/WebSiteCV/OmaWEB.html#',
-        period: '30d',
-        metrics: ['visitors'],
-        dimensions: ['country'],
-        sort: ['-visitors'],
-        limit: 5
-      })
-    }).then(r => r.ok ? r.json() : null).catch(() => null);
+  // Kokonaiskävijät + kesk. käyntiaika (30 päivää)
+  const q1 = await fetch("https://plausible.io/api/v2/query", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      site_id: siteId,
+      period: "30d",
+      metrics: ["visitors", "visit_duration"]
+    })
+  }).then(r => r.ok ? r.json() : null).catch(() => null);
 
-    const visitors = q1?.results?.[0]?.visitors ?? 0;
-    const avgSec   = Math.round(q1?.results?.[0]?.visit_duration ?? 0);
-    const mm = String(Math.floor(avgSec/60)).padStart(2,'0');
-    const ss = String(avgSec%60).padStart(2,'0');
+  // Top 5 countries (30 päivää)
+  const q2 = await fetch("https://plausible.io/api/v2/query", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      site_id: siteId,
+      period: "30d",
+      metrics: ["visitors"],
+      dimensions: ["country"],
+      sort: ["-visitors"],
+      limit: 5
+    })
+  }).then(r => r.ok ? r.json() : null).catch(() => null);
 
-    document.getElementById('pv').textContent  = `Visitors: ${visitors}`;
-    document.getElementById('avg').textContent = `Avrage Time Spend: ${mm}:${ss}`;
+  const visitors = q1?.results?.[0]?.visitors ?? 0;
+  const avgSec   = Math.round(q1?.results?.[0]?.visit_duration ?? 0);
+  const mm = String(Math.floor(avgSec / 60)).padStart(2, "0");
+  const ss = String(avgSec % 60).padStart(2, "0");
 
-    const countries = (q2?.results ?? []).map(r => `${r.country}: ${r.visitors}`).join(', ');
-    document.getElementById('top5').textContent = `Top countrys: ${countries || '—'}`;
-  })();
-  </script>
+  document.getElementById("pv").textContent  = `Visitors: ${visitors}`;
+  document.getElementById("avg").textContent = `Average time spent: ${mm}:${ss}`;
 
-</body>
-</html>
+  const countries = (q2?.results ?? [])
+    .map(r => `${r.country}: ${r.visitors}`)
+    .join(", ");
+  document.getElementById("top5").textContent = `Top countries: ${countries || "—"}`;
+})();
+</script>
+
 
 
 
