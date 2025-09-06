@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <title>DeltaINC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/WebSiteCV/style.css">
 
-  <!-- Plausible perus-skripti (vaihda domain) -->
-  <script defer data-domain="https://galaxy-delta.github.io/WebSiteCV/OmaWEB.html" src="https://plausible.io/js/script.js"></script>
+  <!-- Plausible (domain vain) -->
+  <script defer data-domain="galaxy-delta.github.io" src="https://plausible.io/js/script.js"></script>
 
   <style>
     /* ===== BODY & TAUSTA ===== */
@@ -27,7 +27,7 @@
       text-align: center;
       font-size: 64px;
       font-weight: 700;
-      color: gray17;
+      color: silver;              /* korjattu */
       text-shadow: 3px 3px 8px black;
       padding: 30px 0;
       letter-spacing: 4px;
@@ -36,7 +36,7 @@
     /* ===== NAVIGAATIO ===== */
     .navbar {
       overflow: visible;
-      background-color: gray17;
+      background-color: #2b2b2b;  /* korjattu */
       border-top: 1px solid #666;
       border-bottom: 1px solid #666;
       position: sticky;
@@ -55,11 +55,7 @@
     }
 
     /* ===== DROPDOWNIT ===== */
-    .dropdown {
-      float: left;
-      overflow: visible;
-      position: relative;
-    }
+    .dropdown { float: left; overflow: visible; position: relative; }
     .dropdown .dropbtn {
       font-size: 16px;    
       border: none;
@@ -78,7 +74,7 @@
       position: absolute;
       top: 100%;
       left: 0;
-      background-color: gray;
+      background-color: #3a3a3a; /* parempi kontrasti */
       min-width: 200px;
       z-index: 4000;
       box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
@@ -87,16 +83,19 @@
     }
     .dropdown-content a {
       float: none;
-      color: black;
+      color: #fff;
       padding: 12px 16px;
       text-decoration: none;
       display: block;
       text-align: left;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #555;
     }
     .dropdown-content a:last-child { border-bottom: none; }
-    .dropdown-content a:hover { background-color: #ddd; }
+    .dropdown-content a:hover { background-color: #555; }
     .dropdown:hover .dropdown-content { display: block; }
+    /* mobiili: tap-to-open */
+    .dropdown:focus-within .dropdown-content { display:block; }
+    .dropdown.open .dropdown-content { display:block; }
 
     /* ===== SISÄLTÖ ===== */
     .section {
@@ -107,7 +106,7 @@
     .section-title {
       margin: 24px 0 16px;
       font-size: 28px;
-      color: gray17;
+      color: #ddd; /* korjattu */
       text-shadow: 1px 1px 3px rgba(0,0,0,.6);
       position: relative;
     }
@@ -124,9 +123,7 @@
       grid-template-columns: 1fr;
       gap: 20px;
     }
-    @media (min-width: 900px) {
-      .social-grid { grid-template-columns: 1fr 1fr; }
-    }
+    @media (min-width: 900px) { .social-grid { grid-template-columns: 1fr 1fr; } }
 
     .card {
       background: #3a3a3a;
@@ -144,24 +141,44 @@
       letter-spacing: .5px;
     }
 
-    .ratio {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%; /* 16:9 */
-      border-radius: 8px;
-      overflow: hidden;
-      background: #222;
-    }
-    .ratio iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-    }
+    .ratio { position: relative; width: 100%; padding-top: 56.25%; border-radius: 8px; overflow: hidden; background: #222; }
+    .ratio iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
 
     .hint { font-size: 13px; color: #ccc; margin-top: 8px; }
+
+    /* ===== BLENDER GALLERIA ===== */
+    .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 18px; padding: 16px; }
+    @media (min-width: 640px) { .gallery-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px){ .gallery-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+    .figure {
+      background: #3a3a3a;
+      border: 1px solid #555;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    }
+    .figure .thumb { position: relative; aspect-ratio: 16/9; background:#222; overflow: hidden; display:block; }
+    .figure img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .figure .meta { padding: 12px 14px 14px; }
+    .figure h4 { margin: 0 0 6px; font-size: 16px; color: #fff; letter-spacing: .3px; }
+    .figure p { margin: 0; font-size: 14px; color: #ccc; line-height: 1.45; }
+
+    /* ===== LIGHTBOX ===== */
+    .lightbox {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.85);
+      display: none; align-items: center; justify-content: center;
+      padding: 24px; z-index: 9999;
+    }
+    .lightbox img { max-width: min(92vw, 1600px); max-height: 86vh; display: block; }
+    .lightbox:target { display: flex; }
+    .lightbox a.close {
+      position: fixed; top: 16px; right: 16px;
+      font-size: 28px; line-height: 1; text-decoration: none; color: #fff;
+      padding: 6px 10px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); border-radius: 8px;
+    }
+    html:has(.lightbox:target){ overflow:hidden; } /* estä taustaskrolli */
   </style>
 </head>
 <body>
@@ -175,7 +192,7 @@
     <div class="dropdown">
       <button class="dropbtn">HomePage</button>
       <div class="dropdown-content">
-        <a href="OmaWEB.html">HomePage</a>
+        <a href="/WebSiteCV/OmaWEB.html">HomePage</a>
       </div>
     </div>
 
@@ -191,15 +208,15 @@
     <div class="dropdown">
       <button class="dropbtn">CV</button>
       <div class="dropdown-content">
-        <a href="index.html">CV</a>
+        <a href="/WebSiteCV/index.html">CV</a>
       </div>
     </div>
 
-     <!-- --- Projects --- -->
+    <!-- --- Projects --- -->
     <div class="dropdown">
       <button class="dropbtn">Projects</button>
       <div class="dropdown-content">
-        <a href="Index3.html">Gameprojects</a>
+        <a href="/WebSiteCV/Index3.html">Gameprojects</a>
         <a href="https://galaxy-delta.itch.io/" target="_blank" rel="noopener">Itchio-page</a>
       </div>
     </div>
@@ -222,157 +239,182 @@
     </div>
   </div>
   <!-- ===== NAVIGAATIO LOPPU ===== -->
+
   <div class="gallery-grid">
-  <!-- 1: TÖLKKI -->
-  <figure class="figure">
-    <a class="thumb" href="#img01">
-      <img
-        src="Pictures/can.jpg"
-        srcset="Pictures/can_720.jpg 720w, Pictures/can_1280.jpg 1280w"
-        sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
-        alt="Long Drink made for a school project a clicker game that i made as a meme."
-        loading="lazy" decoding="async">
-    </a>
-    <figcaption class="meta">
-      <h4>Long Drink can</h4>
-      <p>Made for a standalone school project that i made as a meme.</p>
-    </figcaption>
-  </figure>
+    <!-- 1: TÖLKKI -->
+    <figure class="figure">
+      <a class="thumb" href="#img01">
+        <img
+          src="/WebSiteCV/Pictures/can_720.jpg"
+          srcset="/WebSiteCV/Pictures/can_720.jpg 720w, /WebSiteCV/Pictures/can_1280.jpg 1280w"
+          sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+          alt="Long Drink made for a school project a clicker game that I made as a meme."
+          loading="lazy" decoding="async">
+      </a>
+      <figcaption class="meta">
+        <h4>Long Drink can</h4>
+        <p>Made for a standalone school project that I made as a meme.</p>
+      </figcaption>
+    </figure>
 
-<!-- 2: JAMGUY  -->
-<figure class="figure">
-  <a class="thumb" href="#img02">
-    <img
-      src="Pictures/jamguy.png"
-      alt="JamGuy-hahmo game jamia varten"
-      loading="lazy" decoding="async"
-      onerror="this.style.outline='3px solid #f33'; console.error('Image not found:', this.src)">
-  </a>
-  <figcaption class="meta">
-    <h4>JamGuy — Finnish College Game Jam</h4>
-    <p>Made for finnish collage game jam #8 </p>
-  </figcaption>
-</figure>
+    <!-- 2: JAMGUY -->
+    <figure class="figure">
+      <a class="thumb" href="#img02">
+        <img
+          src="/WebSiteCV/Pictures/jamguy.png"
+          alt="JamGuy-hahmo game jamia varten"
+          loading="lazy" decoding="async">
+      </a>
+      <figcaption class="meta">
+        <h4>JamGuy — Finnish College Game Jam</h4>
+        <p>Made for Finnish College Game Jam #8.</p>
+      </figcaption>
+    </figure>
 
-<div id="img02" class="lightbox">
-  <a class="close" href="#">✕</a>
-  <img src="Pictures/jamguy.png" alt="JamGuy — expand">
-</div>
+    <!-- 3: LANKAKONE -->
+    <figure class="figure">
+      <a class="thumb" href="#img03">
+        <img
+          src="/WebSiteCV/Pictures/lankakone.png"
+          alt="Fabric machine made for Kauhava Knife & Textile Museum"
+          loading="lazy" decoding="async">
+      </a>
+      <figcaption class="meta">
+        <h4>Lankakone — Kauhava museum</h4>
+        <p>place holder txt</p>
+      </figcaption>
+    </figure>
 
+    <!-- 4: POWER SUPPLY -->
+    <figure class="figure">
+      <a class="thumb" href="#img04">
+        <img
+          src="/WebSiteCV/Pictures/powersupply_720.jpg"
+          srcset="/WebSiteCV/Pictures/powersupply_720.jpg 720w, /WebSiteCV/Pictures/powersupply_1280.jpg 1280w"
+          sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+          alt="Power supply -prop"
+          loading="lazy" decoding="async">
+      </a>
+      <figcaption class="meta">
+        <h4>Power Supply — prop</h4>
+        <p>place holder txt</p>
+      </figcaption>
+    </figure>
 
-  <!-- 3: LANKAKONE (korjattu) -->
-<figure class="figure">
-  <a class="thumb" href="#img03">
-    <img
-      src="/WebSiteCV/Pictures/lankakone.png"
-      alt="Fabric machine made for Kauhava Knife & Textile Museum"
-      loading="lazy" decoding="async"
-      onerror="this.style.outline='3px solid #f33'; this.alt='404: /WebSiteCV/Pictures/lankakone.png';">
-  </a>
-  <figcaption class="meta">
-    <h4>Lankakone — Kauhava museum</h4>
-    <p>place holder txt</p>
-  </figcaption>
-</figure>
+    <!-- 5: RELKKU -->
+    <figure class="figure">
+      <a class="thumb" href="#img05">
+        <img
+          src="/WebSiteCV/Pictures/relkku_720.jpg"
+          srcset="/WebSiteCV/Pictures/relkku_720.jpg 720w, /WebSiteCV/Pictures/relkku_1280.jpg 1280w"
+          sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+          alt="Puukko (relkku)"
+          loading="lazy" decoding="async">
+      </a>
+      <figcaption class="meta">
+        <h4>Revolver</h4>
+        <p>place holder txt</p>
+      </figcaption>
+    </figure>
 
-<!-- Lightboxin ID vastaa hrefiä (#img03) -->
-<div id="img03" class="lightbox">
-  <a class="close" href="#">✕</a>
-  <img src="/WebSiteCV/Pictures/lankakone.png" alt="Lankakone — suurennos">
-</div>
+    <!-- 6: RIFLE -->
+    <figure class="figure">
+      <a class="thumb" href="#img06">
+        <img
+          src="/WebSiteCV/Pictures/rifle_720.jpg"
+          srcset="/WebSiteCV/Pictures/rifle_720.jpg 720w, /WebSiteCV/Pictures/rifle_1280.jpg 1280w"
+          sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+          alt="Rifle-prop"
+          loading="lazy" decoding="async">
+      </a>
+      <figcaption class="meta">
+        <h4>Rifle</h4>
+        <p>place holder txt</p>
+      </figcaption>
+    </figure>
 
-  <!-- 4: POWER SUPPLY -->
-  <figure class="figure">
-    <a class="thumb" href="#img04">
-      <img
-        src="Pictures/powersupply_720.jpg"
-        srcset="Pictures/powersupply_720.jpg 720w, Pictures/powersupply_1280.jpg 1280w"
-        sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
-        alt="Power supply -prop"
-        loading="lazy" decoding="async">
-    </a>
-    <figcaption class="meta">
-      <h4>Power Supply — prop</h4>
-      <p>place holder txt</p>
-    </figcaption>
-  </figure>
+    <!-- 7: RTX PARODY -->
+    <figure class="figure">
+      <a class="thumb" href="#img07">
+        <img
+          src="/WebSiteCV/Pictures/rtx_parody_720.jpg"
+          srcset="/WebSiteCV/Pictures/rtx_parody_720.jpg 720w, /WebSiteCV/Pictures/rtx_parody_1280.jpg 1280w"
+          sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+          alt="Parodia-näytönohjain"
+          loading="lazy" decoding="async">
+      </a>
+      <figcaption class="meta">
+        <h4>RTX</h4>
+        <p>place holder txt</p>
+      </figcaption>
+    </figure>
 
-  <!-- 5: RELKKU -->
-  <figure class="figure">
-    <a class="thumb" href="#img05">
-      <img
-        src="Pictures/relkku_720.jpg"
-        srcset="Pictures/relkku_720.jpg 720w, Pictures/relkku_1280.jpg 1280w"
-        sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
-        alt="Puukko (relkku)"
-        loading="lazy" decoding="async">
-    </a>
-    <figcaption class="meta">
-      <h4>Revolver</h4>
-      <p>place holder txt</p>
-    </figcaption>
-  </figure>
+    <!-- 8: SETUP -->
+    <figure class="figure">
+      <a class="thumb" href="#img08">
+        <img
+          src="/WebSiteCV/Pictures/setup_720.jpg"
+          srcset="/WebSiteCV/Pictures/setup_720.jpg 720w, /WebSiteCV/Pictures/setup_1280.jpg 1280w"
+          sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+          alt="Oma setup"
+          loading="lazy" decoding="async">
+      </a>
+      <figcaption class="meta">
+        <h4>Setup</h4>
+        <p>place holder txt</p>
+      </figcaption>
+    </figure>
+  </div>
 
-  <!-- 6: RIFLE -->
-  <figure class="figure">
-    <a class="thumb" href="#img06">
-      <img
-        src="Pictures/rifle_720.jpg"
-        srcset="Pictures/rifle_720.jpg 720w, Pictures/rifle_1280.jpg 1280w"
-        sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
-        alt="Rifle-prop"
-        loading="lazy" decoding="async">
-    </a>
-    <figcaption class="meta">
-      <h4>Rifle</h4>
-      <p>place holder txt</p>
-    </figcaption>
-  </figure>
+  <!-- LIGHTBOXIT -->
+  <div id="img01" class="lightbox">
+    <a class="close" href="#">✕</a>
+    <img src="/WebSiteCV/Pictures/can_1280.jpg" alt="Long Drink can — enlarge">
+  </div>
+  <div id="img02" class="lightbox">
+    <a class="close" href="#">✕</a>
+    <img src="/WebSiteCV/Pictures/jamguy.png" alt="JamGuy — enlarge">
+  </div>
+  <div id="img03" class="lightbox">
+    <a class="close" href="#">✕</a>
+    <img src="/WebSiteCV/Pictures/lankakone.png" alt="Lankakone — suurennos">
+  </div>
+  <div id="img04" class="lightbox">
+    <a class="close" href="#">✕</a>
+    <img src="/WebSiteCV/Pictures/powersupply_1280.jpg" alt="Power Supply — enlarge">
+  </div>
+  <div id="img05" class="lightbox">
+    <a class="close" href="#">✕</a>
+    <img src="/WebSiteCV/Pictures/relkku_1280.jpg" alt="Relkku — enlarge">
+  </div>
+  <div id="img06" class="lightbox">
+    <a class="close" href="#">✕</a>
+    <img src="/WebSiteCV/Pictures/rifle_1280.jpg" alt="Rifle — enlarge">
+  </div>
+  <div id="img07" class="lightbox">
+    <a class="close" href="#">✕</a>
+    <img src="/WebSiteCV/Pictures/rtx_parody_1280.jpg" alt="RTX — enlarge">
+  </div>
+  <div id="img08" class="lightbox">
+    <a class="close" href="#">✕</a>
+    <img src="/WebSiteCV/Pictures/setup_1280.jpg" alt="Setup — enlarge">
+  </div>
 
-  <!-- 7: RTX PARODY -->
-  <figure class="figure">
-    <a class="thumb" href="#img07">
-      <img
-        src="Pictures/rtx_parody_720.jpg"
-        srcset="Pictures/rtx_parody_720.jpg 720w, Pictures/rtx_parody_1280.jpg 1280w"
-        sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
-        alt="Parodia-näytönohjain"
-        loading="lazy" decoding="async">
-    </a>
-    <figcaption class="meta">
-      <h4>RTX</h4>
-      <p>place holder txt</p>
-    </figcaption>
-  </figure>
-
-  <!-- 8: SETUP -->
-  <figure class="figure">
-    <a class="thumb" href="#img08">
-      <img
-        src="Pictures/setup_720.jpg"
-        srcset="Pictures/setup_720.jpg 720w, Pictures/setup_1280.jpg 1280w"
-        sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
-        alt="Oma setup"
-        loading="lazy" decoding="async">
-    </a>
-    <figcaption class="meta">
-      <h4>Setup</h4>
-      <p>place holder txt</p>
-    </figcaption>
-  </figure>
-</div>
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <!-- Mobiili: tap-to-open dropdown -->
+  <script>
+    document.querySelectorAll('.dropdown .dropbtn').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        e.preventDefault();
+        const dd = btn.closest('.dropdown');
+        document.querySelectorAll('.dropdown.open').forEach(x=>{ if(x!==dd) x.classList.remove('open'); });
+        dd.classList.toggle('open');
+      });
+    });
+    document.addEventListener('click', e=>{
+      document.querySelectorAll('.dropdown.open').forEach(dd=>{
+        if(!dd.contains(e.target)) dd.classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>
