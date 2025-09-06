@@ -277,27 +277,41 @@
   </section>
 
   <!-- ===== PLAUSIBLE STATS -SCRIPTI ===== -->
-  <script>
+<script>
 (async () => {
-  // Vaihda tämä omaan shared link -domainiin
+  // Sivuston domain GitHub Pagesissa
   const siteId = "galaxy-delta.github.io/WebSiteCV";
 
-  // Public stats endpoint (ei tarvi tokenia)
-  const res = await fetch(`https://plausible.io/api/v1/stats/aggregate?site_id=${encodeURIComponent(siteId)}&period=30d&metrics=visitors,visit_duration`);
-  const data = await res.json();
+  try {
+    // Hakee Plausiblen public stats (ei tarvi tokenia)
+    const res = await fetch(`https://plausible.io/api/v1/stats/aggregate?site_id=${encodeURIComponent(siteId)}&period=30d&metrics=visitors,visit_duration`);
+    if (!res.ok) throw new Error("Fetch failed");
 
-  const visitors = data?.results?.visitors?.value ?? 0;
-  const avgSec   = Math.round(data?.results?.visit_duration?.value ?? 0);
-  const mm = String(Math.floor(avgSec / 60)).padStart(2, "0");
-  const ss = String(avgSec % 60).padStart(2, "0");
+    const data = await res.json();
 
-  document.getElementById("pv").textContent  = `Visitors: ${visitors}`;
-  document.getElementById("avg").textContent = `Average time spent: ${mm}:${ss}`;
+    // Kävijät
+    const visitors = data?.results?.visitors?.value ?? 0;
 
-  // Top countries ei ole saatavilla ilman private API:ta
-  document.getElementById("top5").textContent = `Top countries: use shared link dashboard`;
+    // Keskimääräinen aika
+    const avgSec = Math.round(data?.results?.visit_duration?.value ?? 0);
+    const mm = String(Math.floor(avgSec / 60)).padStart(2, "0");
+    const ss = String(avgSec % 60).padStart(2, "0");
+
+    // Näytä tiedot sivulla
+    document.getElementById("pv").textContent  = `Visitors (30d): ${visitors}`;
+    document.getElementById("avg").textContent = `Average time spent: ${mm}:${ss}`;
+    document.getElementById("top5").textContent = `Top countries: (only via shared dashboard)`;
+
+  } catch (err) {
+    console.error("Plausible fetch error:", err);
+    document.getElementById("pv").textContent  = "Visitors: —";
+    document.getElementById("avg").textContent = "Average time spent: —";
+    document.getElementById("top5").textContent = "Top countries: —";
+  }
 })();
 </script>
+
+
 
 
 
