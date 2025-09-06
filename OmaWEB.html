@@ -290,18 +290,17 @@
     const data = await res.json();
 
     // Kävijät
-    const visitors = data?.results?.visitors?.value ?? 0;
+    const visitors = data.results.visitors.value || 0;
 
     // Keskimääräinen aika
-    const avgSec = Math.round(data?.results?.visit_duration?.value ?? 0);
+    const avgSec = Math.round(data.results.visit_duration.value || 0);
     const mm = String(Math.floor(avgSec / 60)).padStart(2, "0");
     const ss = String(avgSec % 60).padStart(2, "0");
 
     // Näytä tiedot sivulla
     document.getElementById("pv").textContent  = `Visitors (30d): ${visitors}`;
     document.getElementById("avg").textContent = `Average time spent: ${mm}:${ss}`;
-    document.getElementById("top5").textContent = `Top countries: (only via shared dashboard)`;
-
+    document.getElementById("top5").textContent = "Top countries: (only via shared dashboard)";
   } catch (err) {
     console.error("Plausible fetch error:", err);
     document.getElementById("pv").textContent  = "Visitors: —";
@@ -310,6 +309,7 @@
   }
 })();
 </script>
+
 
 
 
