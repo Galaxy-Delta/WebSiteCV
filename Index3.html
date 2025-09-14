@@ -103,13 +103,6 @@
 
     .hint { font-size: 13px; color: #ccc; margin-top: 8px; }
 
-    /* Pieni virheboksi videolle */
-    .video-error {
-      display:none; margin:12px auto 0; padding:10px 12px; max-width:800px;
-      background:#4a2b2b; border:1px solid #aa6; border-radius:8px; color:#ffdede;
-      font-size:14px; line-height:1.4;
-    }
-
     /* ===== MOBIILIYSTÄVÄLLINEN VIDEO ===== */
     .video-wrap{
       position:relative;
@@ -119,8 +112,10 @@
       border-radius:8px;
       overflow:hidden;
       background:#000;
+      aspect-ratio:16/9; 
     }
-    .video-wrap::before{
+    /* fallback aspect-ratio vanhemmille selaimille */
+    .video-wrap.no-aspect::before{
       content:"";
       display:block;
       padding-top:56.25%; /* 16:9 */
@@ -133,6 +128,14 @@
       border:0;
       display:block;
     }
+
+    /*virheboksi videolle */
+    .video-error{
+      display:none; margin:12px auto 0; padding:10px 12px; max-width:800px;
+      background:#4a2b2b; border:1px solid #aa6; border-radius:8px; color:#ffdede;
+      font-size:14px; line-height:1.4;
+    }
+    .video-fallback{ font-size:14px; color:#bbb; margin:8px auto 0; max-width:800px; }
   </style>
 </head>
 <body>
@@ -192,16 +195,12 @@
   <div class="section">
     <h2 class="section-title">Project Trailer</h2>
 
-    <div class="video-wrap">
-      <video id="trailer" controls preload="metadata"
+    <div id="trailerWrap" class="video-wrap">
+      <video id="trailer"
+             controls preload="metadata"
              playsinline webkit-playsinline
-             poster="Videos/thumbnail.jpg">
-        <!-- 1) Suhteellinen polku (paras Pagesissa) -->
-        <source src="Videos/LOGO.mp4" type="video/mp4">
-        <!-- 2) Raw fallback -->
-        <source src="https://raw.githubusercontent.com/Galaxy-Delta/WebSiteCV/main/Videos/LOGO.mp4" type="video/mp4">
-        <!-- 3) Absoluuttinen Pages-URL -->
-        <source src="https://galaxy-delta.github.io/WebSiteCV/Videos/LOGO.mp4" type="video/mp4">
+             poster="Videos/thumbnail.jpg"
+             src="Videos/LOGO.mp4">
         Your browser does not support the video tag.
       </video>
     </div>
@@ -209,8 +208,14 @@
     <div id="trailerError" class="video-error">
       Video ei latautunut. Varmista, että tiedosto on polussa
       <code>Videos/LOGO.mp4</code> (kirjainkoko täsmää), ettei se ole Git LFS:ssä,
-      ja että se on H.264/AAC-muodossa. Kokeile myös päivittää sivu.
+      ja että se on H.264/AAC-muodossa (faststart).
     </div>
+
+    <p class="video-fallback">
+      Jos toisto ei käynnisty mobiilissa, kokeile
+      <a href="Videos/LOGO.mp4" target="_blank" rel="noopener">avaa videon suoraan</a>
+      tai <a href="Videos/LOGO.mp4" download>lataa</a>.
+    </p>
 
     <div class="trailer-desc">
       <h3>Kauhava Knife and Textile Museum Trailer</h3>
@@ -224,10 +229,10 @@
     </div>
   </div>
 
-  <!-- ===== GAME JAM -OSIOT ===== -->
+  <!-- ===== GAME JAM OSIOT ===== -->
   <div class="gamejam-links" style="max-width:800px; margin:20px auto; text-align:left;">
     <h3>Game Jam Projects I Contributed To</h3>
-    <p style="font-size:14px; color:#bbb; line-height:1.4;">
+    <p style="font-size:14px; color:#bbb; line-height:1.4%;">
       These are some Game Jam projects I contributed to.  
       Unfortunately, I was not credited in the final versions, but I still took part in their development.
     </p>
@@ -246,16 +251,23 @@
   </div>
 
   <script>
-    // Näytä virheilmoitus jos mikään lähde ei toimi
     (function(){
       const v = document.getElementById('trailer');
       const box = document.getElementById('trailerError');
-      v.addEventListener('error', () => {
-        box.style.display = 'block';
-      }, { once:true });
+      const wrap = document.getElementById('trailerWrap');
 
+      // aspect-ratio fallback
+      const supportsAspect = window.CSS && CSS.supports && CSS.supports('aspect-ratio: 16/9');
+      if (!supportsAspect) wrap.classList.add('no-aspect');
+
+      // Näytä virheilmoitus jos vittu ei mikään ei toimi
+      v.addEventListener('error',   () => { box.style.display = 'block'; }, { once:true });
       v.addEventListener('stalled', () => { box.style.display = 'block'; }, { once:true });
       v.addEventListener('abort',   () => { box.style.display = 'block'; }, { once:true });
+
+      // Jos selain ei ilmoita tukevansa mp4:ää (harvinaista), näytä virhe
+      const can = v.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
+      if (!can) box.style.display = 'block';
     })();
   </script>
 
