@@ -7,13 +7,17 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
+    *{ box-sizing: border-box; }
+
     /* ===== BODY & TAUSTA ===== */
     body {
-      background-color: #2c2c2c; 
+      background-color: #2c2c2c;
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
       color: #eee;
+      line-height: 1.6;           /* yleinen riviväli → ehkäisee päällekkäisyydet */
+      -webkit-text-size-adjust: 100%;
     }
 
     /* ===== LOGO ===== */
@@ -54,7 +58,7 @@
     /* ===== DROPDOWNIT ===== */
     .dropdown { float: left; overflow: visible; position: relative; }
     .dropdown .dropbtn {
-      font-size: 16px;    
+      font-size: 16px;
       border: none;
       outline: none;
       color: white;
@@ -85,6 +89,7 @@
       display: block;
       text-align: left;
       border-bottom: 1px solid #eee;
+      line-height: 1.5;
     }
     .dropdown-content a:last-child { border-bottom: none; }
     .dropdown-content a:hover { background-color: #ddd; }
@@ -101,7 +106,10 @@
       background: linear-gradient(90deg, silver, transparent); margin-top: 8px;
     }
 
-    .hint { font-size: 13px; color: #ccc; margin-top: 8px; }
+    /* Tekstiblokkien selkeä riviväli mobiilillekin */
+    .trailer-desc p,
+    .gamejam-links p,
+    .gamejam-links li { line-height: 1.6; }
 
     /* ===== MOBIILIYSTÄVÄLLINEN VIDEO ===== */
     .video-wrap{
@@ -112,13 +120,12 @@
       border-radius:8px;
       overflow:hidden;
       background:#000;
-      aspect-ratio:16/9; 
+      aspect-ratio:16/9;          /* modernit selaimet */
     }
-    /* fallback aspect-ratio vanhemmille selaimille */
     .video-wrap.no-aspect::before{
       content:"";
       display:block;
-      padding-top:56.25%; /* 16:9 */
+      padding-top:56.25%;         /* fallback 16:9 */
     }
     .video-wrap video{
       position:absolute;
@@ -127,15 +134,25 @@
       height:100%;
       border:0;
       display:block;
+      background:#000;
     }
 
-    /*virheboksi videolle */
+    /* Virheboksi videolle */
     .video-error{
       display:none; margin:12px auto 0; padding:10px 12px; max-width:800px;
       background:#4a2b2b; border:1px solid #aa6; border-radius:8px; color:#ffdede;
       font-size:14px; line-height:1.4;
     }
     .video-fallback{ font-size:14px; color:#bbb; margin:8px auto 0; max-width:800px; }
+
+    /* ===== MOBIILISÄÄDÖT ===== */
+    @media (max-width: 600px){
+      .logo{ font-size: 40px; letter-spacing: 2px; padding: 20px 0; margin: 20px auto; }
+      .navbar a, .dropdown .dropbtn{ padding: 12px 10px; font-size: 15px; }
+      .section{ padding: 0 14px 32px; }
+      .section-title{ font-size: 24px; }
+      .gamejam-links ul{ padding-left: 18px; }
+    }
   </style>
 </head>
 <body>
@@ -197,17 +214,19 @@
 
     <div id="trailerWrap" class="video-wrap">
       <video id="trailer"
-             controls preload="metadata"
+             controls
+             preload="metadata"
              playsinline webkit-playsinline
              poster="Videos/thumbnail.jpg"
-             src="Videos/LOGO.mp4">
+             src="Videos/LOGO.mp4"
+             type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
         Your browser does not support the video tag.
       </video>
     </div>
 
     <div id="trailerError" class="video-error">
-     Video didnt load. Watch the video directly on below or download it. 
-      <code>Videos/LOGO.mp4</code> 
+      Video ei latautunut. Varmista, että <code>Videos/LOGO.mp4</code> on H.264/AAC (faststart) eikä Git LFS:ssä.
+      Voit myös avata videon suoraan alla olevasta linkistä.
     </div>
 
     <p class="video-fallback">
@@ -231,11 +250,12 @@
   <!-- ===== GAME JAM OSIOT ===== -->
   <div class="gamejam-links" style="max-width:800px; margin:20px auto; text-align:left;">
     <h3>Game Jam Projects I Contributed To</h3>
-    <p style="font-size:14px; color:#bbb; line-height:1.4%;">
-      These are some Game Jam projects I contributed to.  
+    <!-- KORJATTU: poistin virheellisen line-height:1.4% -->
+    <p>
+      These are some Game Jam projects I contributed to.
       Unfortunately, I was not credited in the final versions, but I still took part in their development.
     </p>
-    <ul style="list-style:square; padding-left:20px; line-height:1.6;">
+    <ul style="list-style:square; padding-left:20px;">
       <li>
         <a href="https://avvr.itch.io/lost-in-memory" target="_blank" rel="noopener">
           Finnish College Jam 8
@@ -259,12 +279,13 @@
       const supportsAspect = window.CSS && CSS.supports && CSS.supports('aspect-ratio: 16/9');
       if (!supportsAspect) wrap.classList.add('no-aspect');
 
-      // Näytä virheilmoitus jos vittu ei mikään ei toimi
-      v.addEventListener('error',   () => { box.style.display = 'block'; }, { once:true });
-      v.addEventListener('stalled', () => { box.style.display = 'block'; }, { once:true });
-      v.addEventListener('abort',   () => { box.style.display = 'block'; }, { once:true });
+      // Näytä virheilmoitus jos lataus katkeaa
+      const showErr = () => { box.style.display = 'block'; };
+      v.addEventListener('error',   showErr, { once:true });
+      v.addEventListener('stalled', showErr, { once:true });
+      v.addEventListener('abort',   showErr, { once:true });
 
-      // Jos selain ei ilmoita tukevansa mp4:ää (harvinaista), näytä virhe
+      // Jos selain ei ilmoita tukevansa turvallista mp4-profiilia, näytä virhe
       const can = v.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
       if (!can) box.style.display = 'block';
     })();
