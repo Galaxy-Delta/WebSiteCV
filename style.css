@@ -68,14 +68,6 @@ html::before{
   margin:0; cursor:pointer; display:inline-block; line-height:1;
 }
 
-/* Söpö jelly-hover napille (PUUTTUVA ANIMAATIO LISÄTTY) */
-.dropdown .dropbtn:hover { animation: jelly .6s ease; }
-@keyframes jelly{
-  0%{transform:scale(1)}
-  30%{transform:scale(1.08,.92)}
-  45%{transform:scale(.95,1.05)}
-  60%{transform:scale(1.02,.98)}
-  100%{transform:scale(1)}
 }
 
 /* Paneelin avaaminen + bounce */
@@ -97,7 +89,7 @@ html::before{
 }
 .dropdown-content a:last-child{ border-bottom:none; }
 
-/* Näkyviin hoverilla, näppiksellä ja (UUSI) .open-luokalla mobiilissa */
+/* Näkyviin hoverilla, näppiksellä ja open-luokalla mobiilissa */
 .dropdown:hover .dropdown-content,
 .dropdown:focus-within .dropdown-content,
 .dropdown.open .dropdown-content{
@@ -161,7 +153,7 @@ html:has(.lightbox:target){ overflow:hidden; }
 
 /* Hover-vinkki pikkukuvaan */
 .figure .thumb::after{
-  content:"Klikkaa suurentaaksesi";
+  content:"Klick to expand";
   position:absolute; left:10px; bottom:10px;
   font-size:12px; color:#eee;
   background:rgba(0,0,0,.35); padding:4px 8px; border-radius:6px;
@@ -174,3 +166,4 @@ html:has(.lightbox:target){ overflow:hidden; }
   html::before{ animation:none; }
   *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition:none !important; }
 }
+
