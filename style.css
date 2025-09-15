@@ -1,4 +1,4 @@
-
+/* ===== METALLINEN KIILTO ===== */
 body{
   position: relative;
   z-index: 0;
@@ -9,7 +9,6 @@ body{
   color: #eee;
   background: transparent; 
 }
-
 /* Heijastava metallitausta liikkuvalla valolla */
 html::before{
   content:"";
@@ -17,7 +16,6 @@ html::before{
   inset: 0;
   z-index: -1;
   pointer-events: none;
-
   background:
     /* liukuva highlight */
     linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.18) 48%, rgba(255,255,255,0.04) 55%, transparent 70%) 0 0/200% 200%,
@@ -31,265 +29,148 @@ html::before{
     repeating-linear-gradient(90deg, rgba(255,255,255,0.11) 0 1px, rgba(0,0,0,0.10) 1px 2px, rgba(0,0,0,0.09) 2px 3px),
     /* pohjakerros */
     linear-gradient(90deg, #3b3b3b, #505050, #3b3b3b);
-
   background-blend-mode: screen, screen, screen, overlay, overlay, normal;
   animation: metalSweep 18s ease-in-out infinite alternate;
   filter: saturate(0.9) contrast(1.05) brightness(0.95);
 }
-
 /* Metallin liike */
 @keyframes metalSweep{
-  0%{
-    background-position:
-      0% 0%, 0% 0%, 100% 0%, 50% 50%, 0% 0%, 0% 0%;
-  }
-  100%{
-    background-position:
-      100% 100%, 30% 10%, 70% 30%, 50% 50%, 700px 0%, 0% 0%;
-  }
+  0%{  background-position: 0% 0%, 0% 0%, 100% 0%, 50% 50%, 0% 0%, 0% 0%; }
+  100%{background-position:100% 100%, 30% 10%, 70% 30%, 50% 50%, 700px 0%, 0% 0%;}
 }
 
-/* Logo */
+/* ===== LOGO ===== */
 .logo{
-  display: block;          /* keskitys mahdolliseksi */
-  width: max-content;      /* mitoitetaan tekstin mukaan */
-  margin: 30px auto;       /* vaakakeskitys */
-  text-align: center;
-
-  font-size: 64px;
-  font-weight: 700;
-  color: silver;           /* 'gray17' ei ole validi väri */
-  text-shadow: 3px 3px 8px black;
-  letter-spacing: 4px;
-  padding: 30px 0;
+  display:block; width:max-content; margin:30px auto; text-align:center;
+  font-size:64px; font-weight:700; color:silver; text-shadow:3px 3px 8px black;
+  letter-spacing:4px; padding:30px 0;
 }
-@media (max-width:600px){
-  .logo{ font-size:42px; padding:20px 0; letter-spacing:2px; }
+@media (max-width:600px){ .logo{ font-size:42px; padding:20px 0; letter-spacing:2px; } }
+
+/* ===== SECTION ===== */
+.section{ max-width:1100px; margin:32px auto; padding:0 16px 40px; scroll-margin-top:70px; }
+
+/* ===== NAVBAR + DROPDOWN ===== */
+.navbar{
+  overflow: visible; background-color:#444;
+  border-top:1px solid #666; border-bottom:1px solid #666;
+  position:sticky; top:0; z-index:3000;
 }
-
-/* 2) Sticky-nav kompensointi vieritykselle */
-.section{ 
-  max-width: 1100px; 
-  margin: 32px auto; 
-  padding: 0 16px 40px; 
-  scroll-margin-top: 70px;
-}
-
-/* 3) Jelly hover kaikille dropbtneille */
-.dropdown .dropbtn:hover { animation: jelly .6s ease; }
-
-/* 4) Dropdown – sulavampi */
-.dropdown-content{
-  position: absolute; top: 100%; left: 0;
-  background-color: #2b2b2b;
-  min-width: 200px; z-index: 4000;
-  box-shadow: 0 8px 16px rgba(0,0,0,.2);
-  border-radius: 6px; overflow: hidden;
-
-  transform: scaleY(0); transform-origin: top;
-  opacity: 0; pointer-events: none;
-  visibility: hidden;
-  will-change: transform, opacity;
-  transition: transform .2s ease, opacity .2s ease;
-}
-
-/* Näkyviin hoverilla */
-.dropdown:hover .dropdown-content{
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
-  transform: scaleY(1);
-  animation: dropdownBounce .5s ease forwards;
-}
-
-/* Näkyviin myös näppiksellä/kosketuksella */
-.dropdown:focus-within .dropdown-content{
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
-  transform: scaleY(1);
-  animation: dropdownBounce .5s ease forwards;
-}
-
-/* 5) Kontrasti navissa */
-.navbar{ background-color: #444; }
-.navbar a, .navbar a:link, .navbar a:visited{ color: #fff; }
+.navbar::after{ content:""; display:table; clear:both; }
+.navbar a, .navbar a:link, .navbar a:visited{ color:#fff; }
 .navbar a:hover, .dropdown:hover .dropbtn{
   background: linear-gradient(90deg,#666,#4a4a4a);
 }
-
-/* 6) Focus-tyylit näppäimistölle */
-.navbar a:focus-visible, .dropbtn:focus-visible, .dropdown-content a:focus-visible{
-  outline: 2px solid #bbb; outline-offset: 2px;
-}
-
-/* --- NAVBAR: sticky + z-index + clearfix --- */
-.navbar{
-  overflow: visible;
-  background-color: #444;
-  border-top: 1px solid #666;
-  border-bottom: 1px solid #666;
-  position: sticky;
-  top: 0;
-  z-index: 3000;
-}
-.navbar::after{ content:""; display: table; clear: both; }
-
-/* --- Dropdown-perus: kontti + nappi --- */
-.dropdown{ float: left; overflow: visible; position: relative; }
+.dropdown{ float:left; position:relative; }
 .dropdown .dropbtn{
-  font-size: 16px; border: none; outline: none; color: #fff;
-  padding: 14px 16px; background-color: inherit; font-family: inherit;
-  margin: 0; cursor: pointer;
-  display: inline-block;     
-  line-height: 1;            
+  font-size:16px; border:none; outline:none; color:#fff;
+  padding:14px 16px; background-color:inherit; font-family:inherit;
+  margin:0; cursor:pointer; display:inline-block; line-height:1;
 }
 
-/* --- Söpö “bounce” --- */
+/* Söpö jelly-hover napille (PUUTTUVA ANIMAATIO LISÄTTY) */
+.dropdown .dropbtn:hover { animation: jelly .6s ease; }
+@keyframes jelly{
+  0%{transform:scale(1)}
+  30%{transform:scale(1.08,.92)}
+  45%{transform:scale(.95,1.05)}
+  60%{transform:scale(1.02,.98)}
+  100%{transform:scale(1)}
+}
+
+/* Paneelin avaaminen + bounce */
+.dropdown-content{
+  position:absolute; top:100%; left:0;
+  background-color:#2b2b2b;
+  min-width:200px; z-index:4000;
+  box-shadow:0 8px 16px rgba(0,0,0,.2);
+  border-radius:6px; overflow:hidden;
+
+  transform:scaleY(0); transform-origin:top;
+  opacity:0; pointer-events:none; visibility:hidden;
+  will-change:transform, opacity;
+  transition:transform .2s ease, opacity .2s ease;
+}
+.dropdown-content a{
+  display:block; color:#fff; padding:12px 16px; text-decoration:none;
+  border-bottom:1px solid #555;
+}
+.dropdown-content a:last-child{ border-bottom:none; }
+
+/* Näkyviin hoverilla, näppiksellä ja (UUSI) .open-luokalla mobiilissa */
+.dropdown:hover .dropdown-content,
+.dropdown:focus-within .dropdown-content,
+.dropdown.open .dropdown-content{
+  visibility:visible; opacity:1; pointer-events:auto; transform:scaleY(1);
+  animation: dropdownBounce .5s ease forwards;
+}
 @keyframes dropdownBounce{
-  0%   { transform: scaleY(0) }
-  60%  { transform: scaleY(1.05) }
-  80%  { transform: scaleY(0.95) }
-  100% { transform: scaleY(1) }
+  0%{transform:scaleY(0)}
+  60%{transform:scaleY(1.05)}
+  80%{transform:scaleY(0.95)}
+  100%{transform:scaleY(1)}
 }
 
-/* Vähennä liikettä käyttäjille, jotka pyytävät sitä */
-@media (prefers-reduced-motion: reduce){
-  html::before{ animation: none; }
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition: none !important;
-  }
+/* Näppis-focus */
+.navbar a:focus-visible, .dropbtn:focus-visible, .dropdown-content a:focus-visible{
+  outline:2px solid #bbb; outline-offset:2px;
 }
-/* Sirompi traileri-kortti */
+
+/* ===== TRAILERI-KORTTI ===== */
 .trailer-card{
-  background:#2e2e2e;
-  border:1px solid #444;
-  border-radius:10px;
-  padding:10px;
-  max-width:820px;   /* rajoittaa “taustan neliön” leveyden */
-  margin:0 auto;     /* keskitys */
-  box-shadow:0 6px 15px rgba(0,0,0,.25);
+  background:#2e2e2e; border:1px solid #444; border-radius:10px;
+  padding:10px; max-width:820px; margin:0 auto; box-shadow:0 6px 15px rgba(0,0,0,.25);
 }
-
-/* Videon ja kuvauksen asettelut */
-.trailer-card video{
-  width:100%;
-  height:auto;
-  border-radius:8px;
-  display:block;
-}
-
-.trailer-desc{
-  max-width:800px;
-  margin:12px auto 0;
-  font-size:15px;
-  line-height:1.6;
-  color:#ddd;
-  text-align:left;
-}
+.trailer-card video{ width:100%; height:auto; border-radius:8px; display:block; }
+.trailer-desc{ max-width:800px; margin:12px auto 0; font-size:15px; line-height:1.6; color:#ddd; text-align:left; }
 .trailer-desc strong{ color:silver; }
 
-/* ===== BLENDER GALLERIA ===== */
-.gallery {
-  margin-top: 16px;
-}
+/* ===== GALLERIA ===== */
+.gallery{ margin-top:16px; }
+.gallery-grid{ display:grid; grid-template-columns:1fr; gap:18px; }
+@media (min-width:640px){ .gallery-grid{ grid-template-columns:1fr 1fr; } }
+@media (min-width:1024px){ .gallery-grid{ grid-template-columns:1fr 1fr 1fr; } }
 
-.gallery-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 18px;
+.figure{
+  background:#3a3a3a; border:1px solid #555; border-radius:12px; overflow:hidden;
+  box-shadow:0 8px 20px rgba(0,0,0,.25); display:flex; flex-direction:column;
+  transition:transform .15s ease, box-shadow .15s ease;
 }
-@media (min-width: 640px) { .gallery-grid { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 1024px){ .gallery-grid { grid-template-columns: 1fr 1fr 1fr; } }
+.figure:hover{ transform:translateY(-2px); box-shadow:0 12px 24px rgba(0,0,0,.3); }
+.figure .thumb{ position:relative; aspect-ratio:16/9; background:#222; overflow:hidden; }
+.figure img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-.figure {
-  background: #3a3a3a;
-  border: 1px solid #555;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,.25);
-  display: flex;
-  flex-direction: column;
-  transition: transform .15s ease, box-shadow .15s ease;
-}
-.figure:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(0,0,0,.3);
-}
+.figure .meta{ padding:12px 14px 14px; }
+.figure h4{ margin:0 0 6px; font-size:16px; color:#fff; letter-spacing:.3px; }
+.figure p{ margin:0; font-size:14px; color:#ccc; line-height:1.45; }
 
-.figure .thumb {
-  position: relative;
-  aspect-ratio: 16/9;
-  background:#222;
-  overflow: hidden;
+/* ===== LIGHTBOX ===== */
+.lightbox{
+  position:fixed; inset:0; background:rgba(0,0,0,.85);
+  display:none; align-items:center; justify-content:center; padding:24px; z-index:9999;
+  cursor: zoom-out; /* bonus: osoitin vihjaa sulkemiseen */
 }
-.figure img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.lightbox img{ max-width:min(92vw,1600px); max-height:86vh; display:block; }
+.lightbox:target{ display:flex; }
+.lightbox a.close{
+  position:fixed; top:16px; right:16px; font-size:28px; line-height:1; text-decoration:none; color:#fff;
+  padding:6px 10px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); border-radius:8px;
 }
+/* Estä sivun scroll suurennuksen aikana (tuetuissa selaimissa) */
+html:has(.lightbox:target){ overflow:hidden; }
 
-.figure .meta {
-  padding: 12px 14px 14px;
-}
-.figure h4 {
-  margin: 0 0 6px;
-  font-size: 16px;
-  color: #fff;
-  letter-spacing: .3px;
-}
-.figure p {
-  margin: 0;
-  font-size: 14px;
-  color: #ccc;
-  line-height: 1.45;
-}
-
-/* ===== LIGHTBOX (ankkuritemppu) ===== */
-.lightbox {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.85);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  z-index: 9999;
-}
-.lightbox img {
-  max-width: min(92vw, 1600px);
-  max-height: 86vh;
-  display: block;
-}
-.lightbox:target { display: flex; }
-.lightbox a.close {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  font-size: 28px;
-  line-height: 1;
-  text-decoration: none;
-  color: #fff;
-  padding: 6px 10px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.2);
-  border-radius: 8px;
-}
-
-/* Pieni “zoom”-ikoni hoveriin (valinnainen) */
+/* Hover-vinkki pikkukuvaan */
 .figure .thumb::after{
   content:"Klikkaa suurentaaksesi";
-  position:absolute;left:10px;bottom:10px;
-  font-size:12px;color:#eee;
-  background:rgba(0,0,0,.35);
-  padding:4px 8px;border-radius:6px;
-  opacity:.0;transition:opacity .15s ease;
+  position:absolute; left:10px; bottom:10px;
+  font-size:12px; color:#eee;
+  background:rgba(0,0,0,.35); padding:4px 8px; border-radius:6px;
+  opacity:0; transition:opacity .15s ease; pointer-events:none;
 }
 .figure:hover .thumb::after{ opacity:1; }
 
-
-
-
+/* Vähennä liikettä -tuki */
+@media (prefers-reduced-motion: reduce){
+  html::before{ animation:none; }
+  *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition:none !important; }
+}
