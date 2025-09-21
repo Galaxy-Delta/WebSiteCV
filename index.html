@@ -5,8 +5,15 @@
   <title>CV — DeltaINC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- mobiili -->
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* NAVIGAATION ACTIVE */
+    .dropbtn.active {
+      background-color: #444; /* korostusväri */
+      font-weight: bold;
+    }
+  </style>
 </head>
-<body class="cv"> <!-- luokka jelly-efektiä varten -->
+<body class="cv"> 
 
   <!-- ===== LOGO ===== -->
   <div class="logo">DeltaINC</div>
@@ -25,16 +32,14 @@
     <div class="dropdown">
       <button class="dropbtn">Blender</button>
       <div class="dropdown-content">
-       <a href="index2.html">Projects</a>
+        <a href="index2.html">Projects</a>
       </div>
     </div>
 
-    <!-- --- CV --- -->
+    <!-- --- CV (aktiivinen) --- -->
     <div class="dropdown">
-      <button class="dropbtn">CV</button>
-      <div class="dropdown-content">
-        <a href="index.html">CV</a>
-      </div>
+      <button class="dropbtn active">CV</button>
+      <!-- ei dropdownia koska ollaan jo tällä sivulla -->
     </div>
 
     <!-- --- Projects --- -->
@@ -151,21 +156,9 @@
   <div class="card">
     <ul>
       <li>Finnish — Native</li>
-      <li>English — Professional working proficiency</li
+      <li>English — Professional working proficiency</li>
     </ul>
   </div>
 </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</body>
+</html>
