@@ -1,21 +1,29 @@
-/* ===== METALLINEN KIILTO ===== */
+/* ============================================================
+   METALLINEN KIILTO — koko sivun dynaaminen tausta
+   - body::before = tausta pysyy kaiken sisällön alla (z-index:-1)
+   - vaatii body { isolation:isolate } jotta pseudo ei nouse päälle
+   ============================================================ */
+html, body { background: transparent; } /* varmistus ettei mikään peitä */
+
 body{
-  position: relative;
+  position: relative;       /* ankkuri pseudo-elementille */
   z-index: 0;
-  isolation: isolate;
+  isolation: isolate;       /* pitää ::before:n taustalla */
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
   color: #eee;
-  background: transparent; 
 }
-/* Heijastava metallitausta liikkuvalla valolla */
-html::before{
+
+/* ---- Heijastava metallitausta liikkuvalla valolla ---- */
+body::before{
   content:"";
-  position: fixed;
+  position: fixed;          /* peittää koko viewportin ja liikkuu animissa */
   inset: 0;
-  z-index: -1;
+  z-index: -1;              /* pysyy sisällön alla */
   pointer-events: none;
+
+  /* kerroksittainen “brushed metal” + highlight -kombo */
   background:
     /* liukuva highlight */
     linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.18) 48%, rgba(255,255,255,0.04) 55%, transparent 70%) 0 0/200% 200%,
@@ -25,32 +33,42 @@ html::before{
     radial-gradient(100% 60% at 80% 30%, rgba(255,255,255,0.06), transparent 60%),
     /* conic-korostus */
     conic-gradient(from 210deg at 50% 50%, rgba(255,255,255,0.06), rgba(0,0,0,0.08), rgba(255,255,255,0.06)),
-    /* brushed lines */
+    /* harjattu pinta */
     repeating-linear-gradient(90deg, rgba(255,255,255,0.11) 0 1px, rgba(0,0,0,0.10) 1px 2px, rgba(0,0,0,0.09) 2px 3px),
     /* pohjakerros */
     linear-gradient(90deg, #3b3b3b, #505050, #3b3b3b);
   background-blend-mode: screen, screen, screen, overlay, overlay, normal;
-  animation: metalSweep 18s ease-in-out infinite alternate;
-  filter: saturate(0.9) contrast(1.05) brightness(0.95);
+
+  animation: metalSweep 18s ease-in-out infinite alternate; /* liike */
+  filter: saturate(0.9) contrast(1.05) brightness(0.95);   /* hienosäätö */
 }
-/* Metallin liike */
+
+/* ---- Metallin liike-animointi ---- */
 @keyframes metalSweep{
   0%{  background-position: 0% 0%, 0% 0%, 100% 0%, 50% 50%, 0% 0%, 0% 0%; }
   100%{background-position:100% 100%, 30% 10%, 70% 30%, 50% 50%, 700px 0%, 0% 0%;}
 }
 
-/* ===== LOGO ===== */
+/* ============================================================
+   LOGO — iso otsikko keskelle
+   ============================================================ */
 .logo{
   display:block; width:max-content; margin:30px auto; text-align:center;
   font-size:64px; font-weight:700; color:silver; text-shadow:3px 3px 8px black;
   letter-spacing:4px; padding:30px 0;
 }
-@media (max-width:600px){ .logo{ font-size:42px; padding:20px 0; letter-spacing:2px; } }
+@media (max-width:600px){
+  .logo{ font-size:42px; padding:20px 0; letter-spacing:2px; }
+}
 
-/* ===== SECTION ===== */
+/* ============================================================
+   SECTION — sisältöalueen max leveys ja marginaalit
+   ============================================================ */
 .section{ max-width:1100px; margin:32px auto; padding:0 16px 40px; scroll-margin-top:70px; }
 
-/* ===== NAVBAR + DROPDOWN ===== */
+/* ============================================================
+   NAVBAR + DROPDOWN — sticky yläpalkki ja alasvetovalikot
+   ============================================================ */
 .navbar{
   overflow: visible; background-color:#444;
   border-top:1px solid #666; border-bottom:1px solid #666;
@@ -61,6 +79,8 @@ html::before{
 .navbar a:hover, .dropdown:hover .dropbtn{
   background: linear-gradient(90deg,#666,#4a4a4a);
 }
+
+/* ---- Dropdown-kehikko + nappi ---- */
 .dropdown{ float:left; position:relative; }
 .dropdown .dropbtn{
   font-size:16px; border:none; outline:none; color:#fff;
@@ -68,9 +88,7 @@ html::before{
   margin:0; cursor:pointer; display:inline-block; line-height:1;
 }
 
-
-
-/* Paneelin avaaminen + bounce */
+/* ---- Dropdown-paneeli (piilossa oletuksena, anime avautuu) ---- */
 .dropdown-content{
   position:absolute; top:100%; left:0;
   background-color:#2b2b2b;
@@ -78,24 +96,30 @@ html::before{
   box-shadow:0 8px 16px rgba(0,0,0,.2);
   border-radius:6px; overflow:hidden;
 
+  /* piilotus + fallback vanhoille selaimille */
+  display:none;                     /* fallback: oikeasti kiinni */
   transform:scaleY(0); transform-origin:top;
   opacity:0; pointer-events:none; visibility:hidden;
   will-change:transform, opacity;
   transition:transform .2s ease, opacity .2s ease;
 }
+
 .dropdown-content a{
   display:block; color:#fff; padding:12px 16px; text-decoration:none;
   border-bottom:1px solid #555;
 }
 .dropdown-content a:last-child{ border-bottom:none; }
 
-/* Näkyviin hoverilla, näppiksellä ja open-luokalla mobiilissa */
+/* ---- Näkyviin hoverilla, näppiksellä ja mobiilin .open-luokalla ---- */
 .dropdown:hover .dropdown-content,
 .dropdown:focus-within .dropdown-content,
 .dropdown.open .dropdown-content{
+  display:block;                  /* fallback: näyttää paneelin */
   visibility:visible; opacity:1; pointer-events:auto; transform:scaleY(1);
   animation: dropdownBounce .5s ease forwards;
 }
+
+/* ---- Avautumisanimaation pieni bounce ---- */
 @keyframes dropdownBounce{
   0%{transform:scaleY(0)}
   60%{transform:scaleY(1.05)}
@@ -103,12 +127,14 @@ html::before{
   100%{transform:scaleY(1)}
 }
 
-/* Näppis-focus */
+/* ---- Näppisnavigoinnin korostus ---- */
 .navbar a:focus-visible, .dropbtn:focus-visible, .dropdown-content a:focus-visible{
   outline:2px solid #bbb; outline-offset:2px;
 }
 
-/* ===== TRAILERI-KORTTI ===== */
+/* ============================================================
+   TRAILERI-KORTTI — videolle oma kortti + kuvaus
+   ============================================================ */
 .trailer-card{
   background:#2e2e2e; border:1px solid #444; border-radius:10px;
   padding:10px; max-width:820px; margin:0 auto; box-shadow:0 6px 15px rgba(0,0,0,.25);
@@ -117,12 +143,15 @@ html::before{
 .trailer-desc{ max-width:800px; margin:12px auto 0; font-size:15px; line-height:1.6; color:#ddd; text-align:left; }
 .trailer-desc strong{ color:silver; }
 
-/* ===== GALLERIA ===== */
+/* ============================================================
+   GALLERIA — responsiivinen grid + kortit
+   ============================================================ */
 .gallery{ margin-top:16px; }
 .gallery-grid{ display:grid; grid-template-columns:1fr; gap:18px; }
 @media (min-width:640px){ .gallery-grid{ grid-template-columns:1fr 1fr; } }
 @media (min-width:1024px){ .gallery-grid{ grid-template-columns:1fr 1fr 1fr; } }
 
+/* ---- Yksittäinen kuvakortti ---- */
 .figure{
   background:#3a3a3a; border:1px solid #555; border-radius:12px; overflow:hidden;
   box-shadow:0 8px 20px rgba(0,0,0,.25); display:flex; flex-direction:column;
@@ -136,11 +165,13 @@ html::before{
 .figure h4{ margin:0 0 6px; font-size:16px; color:#fff; letter-spacing:.3px; }
 .figure p{ margin:0; font-size:14px; color:#ccc; line-height:1.45; }
 
-/* ===== LIGHTBOX ===== */
+/* ============================================================
+   LIGHTBOX — kuva isoksi koko ruudulle ankkurilla
+   ============================================================ */
 .lightbox{
   position:fixed; inset:0; background:rgba(0,0,0,.85);
   display:none; align-items:center; justify-content:center; padding:24px; z-index:9999;
-  cursor: zoom-out; /* bonus: osoitin vihjaa sulkemiseen */
+  cursor: zoom-out; /* osoitin vihjaa sulkemiseen */
 }
 .lightbox img{ max-width:min(92vw,1600px); max-height:86vh; display:block; }
 .lightbox:target{ display:flex; }
@@ -148,10 +179,11 @@ html::before{
   position:fixed; top:16px; right:16px; font-size:28px; line-height:1; text-decoration:none; color:#fff;
   padding:6px 10px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); border-radius:8px;
 }
-/* Estä sivun scroll suurennuksen aikana (tuetuissa selaimissa) */
+
+/* ---- Estä sivun scroll suurennuksen aikana (tuetuissa selaimissa) ---- */
 html:has(.lightbox:target){ overflow:hidden; }
 
-/* Hover-vinkki pikkukuvaan */
+/* ---- Hover-vinkki pikkukuvaan ---- */
 .figure .thumb::after{
   content:"Klick to expand";
   position:absolute; left:10px; bottom:10px;
@@ -161,10 +193,10 @@ html:has(.lightbox:target){ overflow:hidden; }
 }
 .figure:hover .thumb::after{ opacity:1; }
 
-/* Vähennä liikettä -tuki */
+/* ============================================================
+   LIIKKEEN VÄHENTÄMINEN — kun käyttäjä pyytää vähemmän animaatiota
+   ============================================================ */
 @media (prefers-reduced-motion: reduce){
-  html::before{ animation:none; }
+  body::before{ animation:none; }
   *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition:none !important; }
 }
-
-
