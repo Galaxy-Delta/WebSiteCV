@@ -68,7 +68,7 @@ html::before{
   margin:0; cursor:pointer; display:inline-block; line-height:1;
 }
 
-}
+
 
 /* Paneelin avaaminen + bounce */
 .dropdown-content{
@@ -166,4 +166,5 @@ html:has(.lightbox:target){ overflow:hidden; }
   html::before{ animation:none; }
   *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition:none !important; }
 }
+
 
