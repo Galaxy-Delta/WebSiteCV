@@ -7,7 +7,7 @@
 <html lang="fi">
 <head>
   <meta charset="utf-8">
-  <title>DeltaINC — PHP testi</title>
+  <title>DeltaINC</title>
   <style>
     body{font-family:Arial, sans-serif;background:#1b1b1b;color:#eee;padding:40px}
     h1{color:#0f0}
@@ -17,7 +17,7 @@
   </style>
 </head>
 <body>
-  <h1>PHP toimii Renderissä ✅</h1>
+  <h1>Tervetuloa tulevaisuuteen✅</h1>
   <p>Serverin kellonaika: <b><?php echo date("H:i:s"); ?></b></p>
 
   <h2>Lähetä viesti</h2>
