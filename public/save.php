@@ -39,6 +39,6 @@ file_put_contents($target, json_encode($items, JSON_PRETTY_PRINT|JSON_UNESCAPED_
 <body style="font-family:Arial,sans-serif;background:#1b1b1b;color:#eee;padding:40px">
   <h1>Kiitos <?php echo htmlspecialchars($data['name']); ?> ✅</h1>
   <p>Sun viesti tallennettiin.</p>
-  <a href="index.php">Takaisin lomakkeelle</a>
+  <a href="OmaWEB.html">Pääsivulle</a>
 </body>
 </html>
