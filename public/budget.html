@@ -7,12 +7,12 @@
   <style>
     /* ===== SUOMEKSI: Perustyyli tummaan teemaan ===== */
     body { background:#1f1f1f; color:#eee; font-family:system-ui, Arial; margin:0; }
-    .wrap { max-width:900px; margin:24px auto; padding:16px; }
+    .wrap { max-width:1100px; margin:24px auto; padding:16px; }
     h1 { margin:0 0 16px; letter-spacing:1px; }
     .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .card { background:#2a2a2a; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:16px; }
     label { display:block; font-size:.9rem; opacity:.9; margin-bottom:6px; }
-    input[type="number"], input[type="text"] {
+    input[type="number"], input[type="text"], select {
       width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
       background:#1d1d1d; color:#fff; box-sizing:border-box;
     }
@@ -25,40 +25,154 @@
     .btn:disabled { opacity:.6; cursor:not-allowed; }
     .totals { display:flex; gap:16px; flex-wrap:wrap; }
     .pill { padding:10px 12px; border-radius:999px; background:#222; border:1px solid rgba(255,255,255,.1); }
-    .ok { color:#9BE169; } .warn { color:#ffb265; } .bad { color:#ff6b6b; }
     .hint { font-size:.85rem; opacity:.75; margin-top:8px;}
-    @media (max-width: 800px){ .grid { grid-template-columns:1fr; } }
+    .minirow { display:grid; grid-template-columns:1fr 130px; gap:8px; align-items:center; margin-bottom:8px; }
+    .twocol { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media (max-width: 1000px){ .grid { grid-template-columns:1fr; } .twocol { grid-template-columns:1fr; } }
+    hr { border:0; border-top:1px solid rgba(255,255,255,.1); margin:12px 0; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Budjettilaskuri</h1>
+
+    <div class="card">
+      <!-- ===== SUOMEKSI: Profiilin valinta ohjaa mitä lisäpaneeleita näytetään ===== -->
+      <label for="profile"><strong>Valitse profiili</strong></label>
+      <select id="profile">
+        <option value="employed">Työssäkäyvä</option>
+        <option value="student">Opiskelija</option>
+        <option value="family">Lapsiperhe</option>
+      </select>
+      <div style="margin-top:10px;">
+        <button class="btn" id="presetBtn">Apply preset for profile</button>
+      </div>
+      <div class="hint">Profiili määrittää lisätulot (tuet/laina) ja lisäkulut (päiväkoti, lounaat, jne.)</div>
+    </div>
+
     <div class="grid">
       <div class="card">
         <h3>Tulot</h3>
-        <label>Netto/kk (€)</label>
-        <input id="income" type="number" min="0" step="1" value="0" />
+        <!-- ===== SUOMEKSI: Yleistulot (palkka tai muu netto/kk) ===== -->
+        <label>Työ / muu netto/kk (€)</label>
+        <input id="incomeBase" type="number" min="0" step="1" value="0" />
+
+        <!-- ===== SUOMEKSI: Opiskelija -lisätulot ===== -->
+        <div id="studentIncomes" style="display:none; margin-top:12px;">
+          <hr>
+          <h4>Opiskelijan tulot</h4>
+          <div class="minirow">
+            <label>Opintotuki (€/kk)</label>
+            <input id="stuGrant" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="minirow">
+            <label>Asumistuki (€/kk)</label>
+            <input id="stuHousing" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="minirow">
+            <label>Opintolainan nosto (€/kk)</label>
+            <input id="stuLoanDraw" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="hint">Lainan nosto kasvattaa kassavirtaa mutta on velkaa (huomioi erikseen jos haluat).</div>
+        </div>
+
+        <!-- ===== SUOMEKSI: Lapsiperhe -lisätulot ===== -->
+        <div id="familyIncomes" style="display:none; margin-top:12px;">
+          <hr>
+          <h4>Lapsiperheen tulot</h4>
+          <div class="minirow">
+            <label>Lapsilisä yhteensä (€/kk)</label>
+            <input id="famChildBenefit" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="minirow">
+            <label>Muu perhetuki (€/kk)</label>
+            <input id="famOtherBenefit" type="number" min="0" step="1" value="0" />
+          </div>
+        </div>
       </div>
 
       <div class="card">
         <h3>Kiinteät kulut (€/kk)</h3>
         <div id="fixed"></div>
         <button class="btn" id="addFixed">+ Lisää kulu</button>
-        <div class="hint">Esim: Vuokra, Sähkö, Netti, Puhelin, Liikenne…</div>
+        <div class="hint">Esim: Vuokra, Sähkö, Netti, Puhelin…</div>
       </div>
 
       <div class="card">
         <h3>Muuttuvat kulut (€/kk)</h3>
         <div id="variable"></div>
         <button class="btn" id="addVariable">+ Lisää kulu</button>
-        <div class="hint">Esim: Ruoka, Viihde, Ravintola, Harrastukset…</div>
+        <div class="hint">Esim: Ruoka, Liikenne, Harrastukset, Vaatteet…</div>
+      </div>
+
+      <div class="card">
+        <h3>Profiilikohtaiset kulut</h3>
+
+        <!-- ===== SUOMEKSI: Opiskelijan kulut ===== -->
+        <div id="studentCosts" style="display:none;">
+          <h4>Opiskelijan kulut</h4>
+          <div class="minirow">
+            <label>YTHS/FSHS kuukausijaolla (€/kk)</label>
+            <input id="stuFshs" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="minirow">
+            <label>Julkinen liikenne (opiskelija) (€/kk)</label>
+            <input id="stuTransport" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="twocol">
+            <div class="minirow">
+              <label>Opiskelijalounas netto (€/ateria)</label>
+              <input id="stuLunchPrice" type="number" min="0" step="0.1" value="0" />
+            </div>
+            <div class="minirow">
+              <label>Aterioita / kk</label>
+              <input id="stuLunchCount" type="number" min="0" step="1" value="0" />
+            </div>
+          </div>
+          <div class="minirow">
+            <label>Tarvikkeet (avg €/kk)</label>
+            <input id="stuSupplies" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="minirow">
+            <label>Opiskelijajärjestö (€/kk)</label>
+            <input id="stuUnion" type="number" min="0" step="1" value="0" />
+          </div>
+        </div>
+
+        <!-- ===== SUOMEKSI: Lapsiperheen kulut ===== -->
+        <div id="familyCosts" style="display:none;">
+          <h4>Lapsiperheen kulut</h4>
+          <div class="minirow">
+            <label>Lasten määrä</label>
+            <input id="famChildrenCount" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="minirow">
+            <label>Päivähoitomaksut yhteensä (€/kk)</label>
+            <input id="famDaycare" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="minirow">
+            <label>Harrastukset lapset (€/kk)</label>
+            <input id="famHobbies" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="minirow">
+            <label>Ruoka lapsille (€/kk)</label>
+            <input id="famFood" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="minirow">
+            <label>Vaipat / tarvikkeet (€/kk)</label>
+            <input id="famSupplies" type="number" min="0" step="1" value="0" />
+          </div>
+        </div>
+
+        <!-- ===== SUOMEKSI: Työssäkäyvällä ei ole pakollisia lisäkenttiä, käytä yllä olevia yleiskuluja ===== -->
+        <div id="employedInfo" class="hint" style="display:block;">Työssäkäyvällä käytä ylempiä tulot/kulut-kenttiä. Profiilikohtaisia lisäkenttiä ei tarvita.</div>
       </div>
 
       <div class="card">
         <h3>Yhteenveto</h3>
         <div class="totals">
-          <div class="pill">Tulot: <span id="sumIncome">0</span> €</div>
-          <div class="pill">Kulut: <span id="sumCosts">0</span> €</div>
+          <div class="pill">Tulot (kaikki): <span id="sumIncome">0</span> €</div>
+          <div class="pill">Kulut (kaikki): <span id="sumCosts">0</span> €</div>
           <div class="pill">Jäljelle: <span id="leftover">0</span> €</div>
           <div class="pill">Säästö-%: <span id="savePct">0</span>%</div>
         </div>
@@ -67,21 +181,26 @@
           <button class="btn" id="resetBtn">Tyhjennä</button>
           <button class="btn" id="adminBtn">Avaa Admin</button>
         </div>
-        <div class="hint">“Tallenna GitHubiin” committaa JSON-tiedoston repoosi <code>data/budgets/</code>-kansioon.</div>
+        <div class="hint">“Tallenna GitHubiin” committaa JSON-tiedoston repoosi <code>data/budgets/</code>-kansioon (Render-backend).</div>
         <div id="status" class="hint" style="margin-top:10px;"></div>
       </div>
     </div>
   </div>
 
   <script>
-    // ===== SUOMEKSI: Render-backendisi perusosoite =====
-    const API_BASE = "hhttps://websitecv-nrv1.onrender.com";
+    // ===== SUOMEKSI: Render-backendin osoite (VAIHDA omaan URL:iin) =====
+    const API_BASE = "https://websitecv-nrv1.onrender.com";
+
+    // ===== SUOMEKSI: Yleiset elementit =====
+    const profileEl = document.getElementById('profile');
+    const presetBtn = document.getElementById('presetBtn');
 
     const fixedEl = document.getElementById('fixed');
     const variableEl = document.getElementById('variable');
     const addFixedBtn = document.getElementById('addFixed');
     const addVariableBtn = document.getElementById('addVariable');
-    const incomeEl = document.getElementById('income');
+
+    const incomeBaseEl = document.getElementById('incomeBase');
     const sumIncomeEl = document.getElementById('sumIncome');
     const sumCostsEl = document.getElementById('sumCosts');
     const leftoverEl = document.getElementById('leftover');
@@ -91,7 +210,34 @@
     const adminBtn = document.getElementById('adminBtn');
     const statusEl = document.getElementById('status');
 
-    // ===== SUOMEKSI: Luo yhden rivin kululle =====
+    // ===== SUOMEKSI: Profiilikohtaiset paneelit =====
+    const studentIncomes = document.getElementById('studentIncomes');
+    const studentCosts = document.getElementById('studentCosts');
+    const familyIncomes = document.getElementById('familyIncomes');
+    const familyCosts = document.getElementById('familyCosts');
+    const employedInfo = document.getElementById('employedInfo');
+
+    // Student inputs
+    const stuGrantEl = document.getElementById('stuGrant');
+    const stuHousingEl = document.getElementById('stuHousing');
+    const stuLoanDrawEl = document.getElementById('stuLoanDraw');
+    const stuFshsEl = document.getElementById('stuFshs');
+    const stuTransportEl = document.getElementById('stuTransport');
+    const stuLunchPriceEl = document.getElementById('stuLunchPrice');
+    const stuLunchCountEl = document.getElementById('stuLunchCount');
+    const stuSuppliesEl = document.getElementById('stuSupplies');
+    const stuUnionEl = document.getElementById('stuUnion');
+
+    // Family inputs
+    const famChildBenefitEl = document.getElementById('famChildBenefit');
+    const famOtherBenefitEl = document.getElementById('famOtherBenefit');
+    const famChildrenCountEl = document.getElementById('famChildrenCount');
+    const famDaycareEl = document.getElementById('famDaycare');
+    const famHobbiesEl = document.getElementById('famHobbies');
+    const famFoodEl = document.getElementById('famFood');
+    const famSuppliesEl = document.getElementById('famSupplies');
+
+    // ===== SUOMEKSI: Luo dynaaminen kulurivi =====
     const makeRow = (name="", value=0, container) => {
       const row = document.createElement('div');
       row.className = 'row';
@@ -120,8 +266,57 @@
     ["Vuokra","Sähkö","Netti","Puhelin"].forEach(n => makeRow(n, 0, fixedEl));
     ["Ruoka","Liikenne"].forEach(n => makeRow(n, 0, variableEl));
 
-    incomeEl.addEventListener('input', recalc);
+    // ===== SUOMEKSI: Profiilipaneelien näyttö/ piilotus =====
+    function updateProfileUI(){
+      const p = profileEl.value;
+      studentIncomes.style.display = (p === 'student') ? 'block' : 'none';
+      studentCosts.style.display   = (p === 'student') ? 'block' : 'none';
+      familyIncomes.style.display  = (p === 'family')  ? 'block' : 'none';
+      familyCosts.style.display    = (p === 'family')  ? 'block' : 'none';
+      employedInfo.style.display   = (p === 'employed')? 'block' : 'none';
+      recalc();
+    }
+    profileEl.addEventListener('change', updateProfileUI);
+    updateProfileUI();
 
+    // ===== SUOMEKSI: Profiilikohtaiset presettien arviot (voit säätää paikallisiin realiteetteihin) =====
+    presetBtn.onclick = () => {
+      const p = profileEl.value;
+
+      // Nollaa profiilikohtaiset kentät
+      [stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl, stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
+       famChildBenefitEl, famOtherBenefitEl, famChildrenCountEl, famDaycareEl, famHobbiesEl, famFoodEl, famSuppliesEl]
+       .forEach(el => el && (el.value = 0));
+
+      if (p === 'student') {
+        // Tulot
+        stuGrantEl.value = 300;
+        stuHousingEl.value = 350;
+        stuLoanDrawEl.value = 250;
+        // Kulut
+        stuFshsEl.value = 10;
+        stuTransportEl.value = 35;
+        stuLunchPriceEl.value = 2.95;
+        stuLunchCountEl.value = 20;
+        stuSuppliesEl.value = 20;
+        stuUnionEl.value = 5;
+      } else if (p === 'family') {
+        // Tulot
+        famChildBenefitEl.value = 300; // esimerkki yhteissumma
+        famOtherBenefitEl.value = 0;
+        famChildrenCountEl.value = 2;
+        // Kulut
+        famDaycareEl.value = 200;
+        famHobbiesEl.value = 80;
+        famFoodEl.value = 300;
+        famSuppliesEl.value = 40;
+      } else if (p === 'employed') {
+        // Työssäkäyvälle ei erillisiä lisätuloja/kuluja oletuksena
+      }
+      recalc();
+    };
+
+    // ===== SUOMEKSI: Lue dynaamiset rivit =====
     function readRows(container){
       const rows = [...container.querySelectorAll('.row')];
       return rows.map(r => {
@@ -130,48 +325,132 @@
       });
     }
 
-    // ===== SUOMEKSI: Lasketaan summat ja päivitetään UI =====
+    // ===== SUOMEKSI: Laske kokonaistulot/kulut profiilin mukaan =====
     function recalc(){
-      const income = Number(incomeEl.value || 0);
+      const baseIncome = Number(incomeBaseEl.value || 0);
+      let profIncome = 0;
+      let profCosts = 0;
+
+      const p = profileEl.value;
+      if (p === 'student') {
+        const g = Number(stuGrantEl.value || 0);
+        const h = Number(stuHousingEl.value || 0);
+        const l = Number(stuLoanDrawEl.value || 0);
+        profIncome += g + h + l;
+
+        const fshs = Number(stuFshsEl.value || 0);
+        const trn  = Number(stuTransportEl.value || 0);
+        const lpr  = Number(stuLunchPriceEl.value || 0);
+        const lct  = Number(stuLunchCountEl.value || 0);
+        const sup  = Number(stuSuppliesEl.value || 0);
+        const uni  = Number(stuUnionEl.value || 0);
+        profCosts += fshs + trn + (lpr * lct) + sup + uni;
+
+      } else if (p === 'family') {
+        const cb  = Number(famChildBenefitEl.value || 0);
+        const oth = Number(famOtherBenefitEl.value || 0);
+        profIncome += cb + oth;
+
+        const dc  = Number(famDaycareEl.value || 0);
+        const hob = Number(famHobbiesEl.value || 0);
+        const food= Number(famFoodEl.value || 0);
+        const sup = Number(famSuppliesEl.value || 0);
+        profCosts += dc + hob + food + sup;
+      }
+
       const fixed = readRows(fixedEl);
       const variable = readRows(variableEl);
-      const costs = [...fixed, ...variable].reduce((a,b)=>a + (Number.isFinite(b.value) ? b.value : 0), 0);
-      const left = income - costs;
-      const pct = income > 0 ? Math.round((left / income) * 100) : 0;
+      const baseCosts = [...fixed, ...variable].reduce((a,b)=>a + (Number.isFinite(b.value) ? b.value : 0), 0);
 
-      sumIncomeEl.textContent = income.toFixed(0);
-      sumCostsEl.textContent = costs.toFixed(0);
-      leftoverEl.textContent = left.toFixed(0);
-      savePctEl.textContent = pct;
+      const totalIncome = baseIncome + profIncome;
+      const totalCosts  = baseCosts + profCosts;
+      const left = totalIncome - totalCosts;
+      const pct = totalIncome > 0 ? Math.round((left / totalIncome) * 100) : 0;
 
-      saveBtn.disabled = !(income > 0 || costs > 0);
+      sumIncomeEl.textContent = Math.round(totalIncome).toString();
+      sumCostsEl.textContent = Math.round(totalCosts).toString();
+      leftoverEl.textContent = Math.round(left).toString();
+      savePctEl.textContent = pct.toString();
+
+      saveBtn.disabled = !(totalIncome > 0 || totalCosts > 0);
     }
+
+    // ===== SUOMEKSI: Event-kytkennät =====
+    [
+      incomeBaseEl, stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl,
+      stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
+      famChildBenefitEl, famOtherBenefitEl, famChildrenCountEl, famDaycareEl, famHobbiesEl, famFoodEl, famSuppliesEl
+    ].forEach(el => el && el.addEventListener('input', recalc));
+
+    incomeBaseEl.addEventListener('input', recalc);
     recalc();
 
+    // ===== SUOMEKSI: Resetoi kaiken nopsaan =====
     resetBtn.onclick = () => {
-      incomeEl.value = 0;
+      incomeBaseEl.value = 0;
       fixedEl.innerHTML = "";
       variableEl.innerHTML = "";
       ["Vuokra","Sähkö","Netti","Puhelin"].forEach(n => makeRow(n, 0, fixedEl));
       ["Ruoka","Liikenne"].forEach(n => makeRow(n, 0, variableEl));
-      recalc();
+
+      // tyhjennä profiilikentät
+      [stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl, stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
+       famChildBenefitEl, famOtherBenefitEl, famChildrenCountEl, famDaycareEl, famHobbiesEl, famFoodEl, famSuppliesEl]
+       .forEach(el => el && (el.value = 0));
+
+      profileEl.value = 'employed';
+      updateProfileUI();
       statusEl.textContent = "";
+      recalc();
     };
 
-    // ===== SUOMEKSI: Tallennus Renderin APIin (josta commit GitHubiin) =====
+    // ===== SUOMEKSI: Tallennus Renderin APIin (-> commit GitHubiin) =====
     saveBtn.onclick = async () => {
       statusEl.textContent = "Tallennetaan… (ensimmäinen pyyntö voi herättää palvelimen)";
+      const p = profileEl.value;
+
       const payload = {
         meta: {
           type: "budget",
+          profile: p,
           createdAt: new Date().toISOString(),
           userAgent: navigator.userAgent
         },
-        income: Number(incomeEl.value||0),
-        fixed: readRows(fixedEl),
-        variable: readRows(variableEl),
+        income: {
+          base: Number(incomeBaseEl.value||0),
+          student: (p==='student') ? {
+            grant: Number(stuGrantEl.value||0),
+            housing: Number(stuHousingEl.value||0),
+            loanDraw: Number(stuLoanDrawEl.value||0)
+          } : null,
+          family: (p==='family') ? {
+            childBenefit: Number(famChildBenefitEl.value||0),
+            otherBenefit: Number(famOtherBenefitEl.value||0)
+          } : null
+        },
+        costs: {
+          fixed: readRows(fixedEl),
+          variable: readRows(variableEl),
+          student: (p==='student') ? {
+            fshs: Number(stuFshsEl.value||0),
+            transport: Number(stuTransportEl.value||0),
+            lunchUnit: Number(stuLunchPriceEl.value||0),
+            lunchCount: Number(stuLunchCountEl.value||0),
+            lunchTotal: Number(stuLunchPriceEl.value||0) * Number(stuLunchCountEl.value||0),
+            supplies: Number(stuSuppliesEl.value||0),
+            union: Number(stuUnionEl.value||0)
+          } : null,
+          family: (p==='family') ? {
+            childrenCount: Number(famChildrenCountEl.value||0),
+            daycare: Number(famDaycareEl.value||0),
+            hobbies: Number(famHobbiesEl.value||0),
+            food: Number(famFoodEl.value||0),
+            supplies: Number(famSuppliesEl.value||0)
+          } : null
+        },
         sums: {
-          costs: Number(sumCostsEl.textContent),
+          totalIncome: Number(sumIncomeEl.textContent),
+          totalCosts: Number(sumCostsEl.textContent),
           leftover: Number(leftoverEl.textContent),
           savePct: Number(savePctEl.textContent)
         }
@@ -191,9 +470,8 @@
       }
     };
 
-    // ===== SUOMEKSI: Yksinkertainen admin-linkki (listausnäkymään) =====
+    // ===== SUOMEKSI: Admin-listaus endpointtiin (nopea tapa) =====
     adminBtn.onclick = () => {
-      // voit tehdä oman admin-sivun, tässä nopea reitti listaus-endpointtiin
       const y = new Date().getFullYear();
       const m = String(new Date().getMonth() + 1).padStart(2, "0");
       window.open(`${API_BASE}/api/list-budgets?year=${y}&month=${m}`, "_blank");
