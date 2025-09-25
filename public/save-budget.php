@@ -3,13 +3,32 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
+
+// Preflight
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+  http_response_code(204);
+  exit;
+}
 
 header('Content-Type: application/json; charset=utf-8');
 
+// --- 1) Hyödylliset perus-tarkistukset (näiden puuttuessa tulee se "Bad JSON") ---
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+  http_response_code(405);
+  echo json_encode(['error' => 'Method Not Allowed. Use POST.']);
+  exit;
+}
+
+$ct = $_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? '';
+if (stripos($ct, 'application/json') !== 0) {
+  http_response_code(415);
+  echo json_encode(['error' => 'Unsupported Media Type. Send Content-Type: application/json.']);
+  exit;
+}
+
 // ===== Env =====
 $token  = getenv('GITHUB_TOKEN');
-$repo   = getenv('GITHUB_REPO');   // muodossa "owner/repo"
+$repo   = getenv('GITHUB_REPO');   // "owner/repo"
 $branch = getenv('GITHUB_BRANCH') ?: 'main';
 
 if (!$token || !$repo) {
@@ -19,21 +38,28 @@ if (!$token || !$repo) {
 
 // ===== JSON body =====
 $raw = file_get_contents('php://input');
+if ($raw === '' || $raw === false) {
+  http_response_code(400);
+  echo json_encode(['error' => 'Empty request body (expected JSON)']);
+  exit;
+}
+
 $data = json_decode($raw, true);
 if (!is_array($data)) {
   http_response_code(400);
-  echo json_encode(['error' => 'Bad JSON']); exit;
+  echo json_encode(['error' => 'Bad JSON', 'detail' => json_last_error_msg(), 'rawPreview' => substr($raw, 0, 80)]);
+  exit;
 }
 
 // ===== Kohdepolku =====
-$now = new DateTime('now', new DateTimeZone('UTC'));
-$yyyy = $now->format('Y');
-$mm   = $now->format('m');
-$ts   = preg_replace('/[:.]/', '-', $now->format(DateTime::ATOM));
+$now   = new DateTime('now', new DateTimeZone('UTC'));
+$yyyy  = $now->format('Y');
+$mm    = $now->format('m');
+$ts    = preg_replace('/[:.]/', '-', $now->format(DateTime::ATOM));
 $relPath = "data/budgets/$yyyy/$mm/budget-$ts.json";
 
-/** SUOMEKSI: enkoodaa polun segmentit erikseen */
-$segments = array_map('rawurlencode', explode('/', $relPath));
+// Polun segmentit URL-enkoodattuna
+$segments    = array_map('rawurlencode', explode('/', $relPath));
 $encodedPath = implode('/', $segments);
 
 // ===== GitHub API payload =====
@@ -69,13 +95,15 @@ curl_close($ch);
 
 if ($err) {
   http_response_code(500);
-  echo json_encode(['error' => "cURL error: $err"]); exit;
+  echo json_encode(['error' => "cURL error: $err"]);
+  exit;
 }
 
 $res = json_decode($response, true);
 if ($httpCode >= 200 && $httpCode < 300) {
   $sha = $res['commit']['sha'] ?? null;
-  echo json_encode(['ok' => true, 'path' => $relPath, 'commitSha' => $sha]); exit;
+  echo json_encode(['ok' => true, 'path' => $relPath, 'commitSha' => $sha]);
+  exit;
 }
 
 http_response_code($httpCode ?: 500);
