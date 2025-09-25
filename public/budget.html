@@ -10,24 +10,16 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.28/dist/jspdf.plugin.autotable.min.js"></script>
 
   <style>
-    /* ===== Design tokens ===== */
     :root{
       --bg:#121212; --panel:#1a1a1a; --muted:#2a2a2a; --text:#ededed; --subtle:#bdbdbd; --line:#3a3a3a;
       --ok:#a3e635; --warn:#fbbf24; --bad:#fb7185; --accent:#60a5fa;
     }
-    /* ===== Global ===== */
     html,body{height:100%}
     body{ margin:0; background:var(--bg); color:var(--text);
-      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
     *{box-sizing:border-box}
-
-    /* ===== Logo ===== */
     .logo { display:block; width:max-content; margin:30px auto; text-align:center;
-      font-size:64px; font-weight:700; color:gray17; text-shadow:3px 3px 8px black;
-      padding:30px 0; letter-spacing:4px; }
-
-    /* ===== Navbar (säilytetty) ===== */
+      font-size:64px; font-weight:700; color:gray17; text-shadow:3px 3px 8px black; padding:30px 0; letter-spacing:4px; }
     .navbar { overflow:visible; background-color:gray17; border-top:1px solid #666; border-bottom:1px solid #666;
       position:sticky; top:0; z-index:3000; }
     .navbar::after { content:""; display:table; clear:both; }
@@ -37,60 +29,42 @@
       font-family:inherit; margin:0; cursor:pointer; }
     .navbar a:hover, .dropdown:hover .dropbtn { background-color:#666; }
     .dropdown-content { display:none; position:absolute; top:100%; left:0; background-color:gray; min-width:200px; z-index:4000;
-      box-shadow:0 8px 16px rgba(0,0,0,0.2); border-radius:0; overflow:hidden; }
+      box-shadow:0px 8px 16px rgba(0,0,0,0.2); border-radius:0; overflow:hidden; }
     .dropdown-content a { float:none; color:black; padding:12px 16px; text-decoration:none; display:block; text-align:left;
       border-bottom:1px solid #eee; }
     .dropdown-content a:last-child { border-bottom:none; }
     .dropdown-content a:hover { background-color:#ddd; }
     .dropdown:hover .dropdown-content { display:block; }
 
-    /* ===== Layout ===== */
     .wrap{ max-width:1200px; margin:24px auto; padding:0 16px 64px; }
     h1{ margin:0 0 16px; letter-spacing:.5px; font-size:clamp(22px,2.4vw,28px); }
-
     .grid{ display:grid; grid-template-columns:repeat(12, 1fr); gap:14px; }
-
-    /* Paneelit */
     .card{ background:linear-gradient(180deg, var(--panel), #151515); border:1px solid var(--line); border-radius:0; padding:16px;
       box-shadow:0 8px 20px rgba(0,0,0,.25); }
     .card h3{ margin:0 0 12px; font-size:clamp(16px,2vw,18px); letter-spacing:.3px }
     .card h4{ margin:10px 0; font-size:14px; color:var(--subtle); font-weight:600 }
-
     .col-6{ grid-column:span 6 } .col-12{ grid-column:span 12 }
-
-    /* Syötteet */
     label{ display:block; font-size:.9rem; color:var(--subtle); margin:0 0 6px }
     input[type="number"], input[type="text"], select{
       width:100%; background:#0f0f0f; color:var(--text); border:1px solid var(--line); border-radius:0; padding:12px 12px;
       min-height:48px; font-size:16px; }
     input:focus, select:focus{ outline:2px solid var(--accent); outline-offset:0; border-color:var(--accent) }
-
-    /* Dynaamiset rivit */
     .row{ display:grid; grid-template-columns:1fr 140px 44px; gap:8px; margin-bottom:8px; align-items:center; }
     .row button{ width:44px; height:48px; border:1px solid var(--line); border-radius:0; background:#0f0f0f; color:var(--text); cursor:pointer }
     .row button:hover{ background:#151515 }
-
-    /* Napit */
     .btn{ padding:12px 16px; border-radius:0; border:1px solid var(--line); background:#0f0f0f; color:var(--text); cursor:pointer;
       margin-right:8px; min-height:48px; font-weight:600; }
     .btn:hover{ background:#151515 }
     .btn:disabled{ opacity:.6; cursor:not-allowed }
     .btn.primary{ background:var(--accent); border-color:var(--accent); color:#0b1220; }
     .btn.primary:hover{ filter:brightness(0.95) }
-
-    /* Badge-tyyliset summat */
     .totals{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:8px }
     .pill{ padding:10px 12px; border-radius:0; background:#0f0f0f; border:1px solid var(--line); font-variant-numeric:tabular-nums; }
-    .ok{ color:var(--ok) } .warn{ color:var(--warn) } .bad{ color:var(--bad) }
     .hint{ font-size:.9rem; color:var(--subtle); margin-top:8px }
-
     .minirow{ display:grid; grid-template-columns:1fr 150px; gap:8px; align-items:center; margin-bottom:8px }
     .twocol{ display:grid; grid-template-columns:1fr 1fr; gap:10px }
-
     hr{ border:0; border-top:1px solid var(--line); margin:12px 0 }
-
     .actions{ display:flex; gap:8px; flex-wrap:wrap }
-
     @media (max-width: 900px){
       .grid{ grid-template-columns:1fr }
       .col-6, .col-12{ grid-column:1 }
@@ -98,16 +72,12 @@
       .actions .btn{ flex:1 1 100% }
       .twocol{ grid-template-columns:1fr }
     }
-
-    @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto; transition:none !important } }
   </style>
 </head>
 <body>
 
-  <!-- Logo -->
   <div class="logo">DeltaINC</div>
 
-  <!-- Navbar (säilytetty) -->
   <div class="navbar">
     <div class="dropdown"><button class="dropbtn">HomePage</button><div class="dropdown-content"><a href="/OmaWEB.html">HomePage</a></div></div>
     <div class="dropdown"><button class="dropbtn">Blender</button><div class="dropdown-content"><a href="/blender.html">Projects</a></div></div>
@@ -121,7 +91,7 @@
   <div class="wrap">
     <h1>Budget Calculator</h1>
 
-    <!-- Profiilin valinta (UI tekstit englanniksi, value-arvot ennallaan) -->
+    <!-- Profiilin valinta -->
     <div class="card col-12" style="margin-bottom:14px">
       <label for="profile"><strong>Select profile</strong></label>
       <div class="twocol">
@@ -136,13 +106,11 @@
     </div>
 
     <div class="grid">
-      <!-- Tulot (englanniksi) -->
+      <!-- Income -->
       <div class="card col-6">
         <h3>Income</h3>
         <label>Base net income / month (€)</label>
         <input id="incomeBase" type="number" inputmode="numeric" min="0" step="1" value="0" />
-
-        <!-- Opiskelijan lisätulot -->
         <div id="studentIncomes" style="display:none; margin-top:12px;">
           <hr><h4>Student incomes</h4>
           <div class="minirow"><label>Study grant (€ / mo)</label><input id="stuGrant" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
@@ -150,8 +118,6 @@
           <div class="minirow"><label>Student loan withdrawal (€ / mo)</label><input id="stuLoanDraw" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
           <div class="hint">Loan withdrawal increases cash flow but is debt.</div>
         </div>
-
-        <!-- Lapsiperheen lisätulot -->
         <div id="familyIncomes" style="display:none; margin-top:12px;">
           <hr><h4>Family incomes</h4>
           <div class="minirow"><label>Child benefit total (€ / mo)</label><input id="famChildBenefit" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
@@ -159,7 +125,7 @@
         </div>
       </div>
 
-      <!-- Kiinteät kulut (englanniksi) -->
+      <!-- Fixed costs -->
       <div class="card col-6">
         <h3>Fixed costs (€ / month)</h3>
         <div id="fixed"></div>
@@ -167,7 +133,7 @@
         <div class="hint">E.g. Rent, Electricity, Internet, Phone…</div>
       </div>
 
-      <!-- Muuttuvat kulut (englanniksi) -->
+      <!-- Variable costs -->
       <div class="card col-6">
         <h3>Variable costs (€ / month)</h3>
         <div id="variable"></div>
@@ -175,10 +141,9 @@
         <div class="hint">E.g. Groceries, Transportation, Hobbies, Clothing…</div>
       </div>
 
-      <!-- Profiilikohtaiset kulut (englanniksi) -->
+      <!-- Profile-specific costs -->
       <div class="card col-6">
         <h3>Profile-specific costs</h3>
-
         <div id="studentCosts" style="display:none;">
           <h4>Student costs</h4>
           <div class="minirow"><label>FSHS / student health (€ / mo)</label><input id="stuFshs" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
@@ -203,7 +168,7 @@
         <div id="employedInfo" class="hint" style="display:block;">For employed, use the general fields above. No extra fields needed.</div>
       </div>
 
-      <!-- Yhteenveto (badge-numerot, voi olla edelleen suomea tai englantia – vaihdettu englanniksi) -->
+      <!-- Totals + actions -->
       <div class="card col-12">
         <h3>Totals</h3>
         <div class="totals">
@@ -223,7 +188,7 @@
         <div id="status" class="hint" style="margin-top:10px;"></div>
       </div>
 
-      <!-- Summary-kortti, näytetään tallennuksen jälkeen -->
+      <!-- Summary (shown after save) -->
       <div id="summaryCard" class="card col-12" style="display:none; margin-top:14px">
         <h3>Summary</h3>
         <div id="summaryBody" style="font-variant-numeric:tabular-nums"></div>
@@ -235,10 +200,8 @@
   </div>
 
   <script>
-    // ===== Backendin URL (Render) =====
     const API_BASE = "https://websitecv-nrv1.onrender.com";
 
-    // ===== Nappien ja kenttien referenssit =====
     const profileEl = document.getElementById('profile');
     const presetBtn = document.getElementById('presetBtn');
 
@@ -259,19 +222,16 @@
     const adminBtn = document.getElementById('adminBtn');
     const statusEl = document.getElementById('status');
 
-    // Summary-kortin elementit
     const summaryCard = document.getElementById('summaryCard');
     const summaryBody = document.getElementById('summaryBody');
     const downloadAfterSaveBtn = document.getElementById('downloadAfterSave');
 
-    // Profiilikohtaiset kentät
     const studentIncomes = document.getElementById('studentIncomes');
     const studentCosts = document.getElementById('studentCosts');
     const familyIncomes = document.getElementById('familyIncomes');
     const familyCosts = document.getElementById('familyCosts');
     const employedInfo = document.getElementById('employedInfo');
 
-    // Student inputs
     const stuGrantEl = document.getElementById('stuGrant');
     const stuHousingEl = document.getElementById('stuHousing');
     const stuLoanDrawEl = document.getElementById('stuLoanDraw');
@@ -282,7 +242,6 @@
     const stuSuppliesEl = document.getElementById('stuSupplies');
     const stuUnionEl = document.getElementById('stuUnion');
 
-    // Family inputs
     const famChildBenefitEl = document.getElementById('famChildBenefit');
     const famOtherBenefitEl = document.getElementById('famOtherBenefit');
     const famChildrenCountEl = document.getElementById('famChildrenCount');
@@ -291,7 +250,7 @@
     const famFoodEl = document.getElementById('famFood');
     const famSuppliesEl = document.getElementById('famSupplies');
 
-    // ===== Dynaamisen kulurivin luonti =====
+    // Luo dynaaminen kulurivi
     const makeRow = (name="", value=0, container) => {
       const row = document.createElement('div');
       row.className = 'row';
@@ -304,15 +263,12 @@
       container.appendChild(row);
     };
 
-    // Lisää uusia rivejä nappuloista
     addFixedBtn.onclick = () => makeRow("", 0, fixedEl);
     addVariableBtn.onclick = () => makeRow("", 0, variableEl);
 
-    // Oletusrivit (englanniksi)
     ["Rent","Electricity","Internet","Phone"].forEach(n => makeRow(n, 0, fixedEl));
     ["Groceries","Transportation"].forEach(n => makeRow(n, 0, variableEl));
 
-    // ===== Profiilipaneelien näyttö/piilotus =====
     function updateProfileUI(){
       const p = profileEl.value;
       studentIncomes.style.display = (p === 'student') ? 'block' : 'none';
@@ -325,7 +281,6 @@
     profileEl.addEventListener('change', updateProfileUI);
     updateProfileUI();
 
-    // ===== Presetit profiilin mukaan =====
     presetBtn.onclick = () => {
       const p = profileEl.value;
       [stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl, stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
@@ -342,7 +297,6 @@
       recalc();
     };
 
-    // ===== Lue dynaamiset rivit taulukoksi =====
     function readRows(container){
       const rows = [...container.querySelectorAll('.row')];
       return rows.map(r => {
@@ -351,7 +305,6 @@
       });
     }
 
-    // ===== Laskenta (summat ja säästö%) =====
     function recalc(){
       const baseIncome = Number(incomeBaseEl.value || 0);
       let profIncome = 0, profCosts = 0;
@@ -385,7 +338,6 @@
       saveBtn.disabled = !(totalIncome > 0 || totalCosts > 0);
     }
 
-    // Laskenta päälle kaikista syötteistä
     [
       incomeBaseEl, stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl,
       stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
@@ -394,7 +346,6 @@
     incomeBaseEl.addEventListener('input', recalc);
     recalc();
 
-    // ===== Yhteinen payload PDF:lle ja tallennukselle =====
     function buildPayload(){
       const p = profileEl.value;
       return {
@@ -429,9 +380,7 @@
       };
     }
 
-    // ===== Summary-kortin generointi (näytetään tallennuksen jälkeen) =====
     function renderSummary(p){
-      // Rakenna Incomes-taulukko
       const incRows = [];
       if (p.income.base) incRows.push(`<tr><td>Base net income</td><td>${p.income.base} €</td></tr>`);
       if (p.income.student){
@@ -446,7 +395,6 @@
         if (f.otherBenefit) incRows.push(`<tr><td>Other family benefit</td><td>${f.otherBenefit} €</td></tr>`);
       }
 
-      // Rakenna Costs-taulukko
       const costRows = [];
       (p.costs.fixed || []).forEach(r => costRows.push(`<tr><td>Fixed: ${r.name || '(unnamed)'}</td><td>${r.value} €</td></tr>`));
       (p.costs.variable || []).forEach(r => costRows.push(`<tr><td>Variable: ${r.name || '(unnamed)'}</td><td>${r.value} €</td></tr>`));
@@ -466,7 +414,6 @@
         if (f.supplies) costRows.push(`<tr><td>Diapers / supplies</td><td>${f.supplies} €</td></tr>`);
       }
 
-      // Summat
       const totalsHTML = `
         <table style="width:100%;border-collapse:collapse;margin:10px 0">
           <tbody>
@@ -478,7 +425,6 @@
         </table>
       `;
 
-      // Taulukot
       const incTable = `
         <h4>Incomes</h4>
         <table style="width:100%;border-collapse:collapse;margin:6px 0">
@@ -494,14 +440,12 @@
         </table>
       `;
 
-      // Aseta sisältö ja näytä kortti
       summaryBody.innerHTML = totalsHTML + incTable + costTable;
       summaryCard.style.display = 'block';
-      // Scrollaa kortille
       summaryCard.scrollIntoView({ behavior:'smooth', block:'start' });
     }
 
-    // ===== PDF:n generointi (uudelleenkäytettävä funktio) =====
+    // PDF:n generointi (KORJAUS: käytä doc.autoTable, ei window.jspdfAutoTable)
     function generatePDF(data){
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ unit:'pt', format:'a4' });
@@ -514,14 +458,12 @@
       const hh = String(now.getHours()).padStart(2,'0');
       const mi = String(now.getMinutes()).padStart(2,'0');
 
-      // Header
       doc.setFont('helvetica','bold'); doc.setFontSize(20);
       doc.text('DeltaINC — Budget Report', 40, 50);
       doc.setFont('helvetica','normal'); doc.setFontSize(11);
       doc.text(`Date: ${yyyy}-${mm}-${dd}  ${hh}:${mi}`, 40, 70);
       doc.text(`Profile: ${profile}`, 40, 86);
 
-      // Incomes table
       const incomeRows = [];
       if (data.income.base) incomeRows.push(['Base net income', `${data.income.base} €`]);
       if (data.income.student){
@@ -535,14 +477,14 @@
         if (f.childBenefit) incomeRows.push(['Child benefit', `${f.childBenefit} €`]);
         if (f.otherBenefit) incomeRows.push(['Other family benefit', `${f.otherBenefit} €`]);
       }
-      window.jspdfAutoTable(doc, {
+      doc.autoTable({
         startY: 110,
         head: [['Income','Amount']],
         body: incomeRows.length ? incomeRows : [['(no detailed items)','0 €']],
-        theme: 'grid', styles:{ fontSize:11, cellPadding:6 }
+        theme: 'grid',
+        styles:{ fontSize:11, cellPadding:6 }
       });
 
-      // Costs table (combined)
       const costRows = [];
       (data.costs.fixed || []).forEach(r => costRows.push([`Fixed: ${r.name}`, `${r.value} €`]));
       (data.costs.variable || []).forEach(r => costRows.push([`Variable: ${r.name}`, `${r.value} €`]));
@@ -561,14 +503,14 @@
         if (f.food)     costRows.push(['Food for kids', `${f.food} €`]);
         if (f.supplies) costRows.push(['Diapers / supplies', `${f.supplies} €`]);
       }
-      window.jspdfAutoTable(doc, {
+      doc.autoTable({
         startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + 18 : 180,
         head: [['Costs','Amount']],
         body: costRows.length ? costRows : [['(no detailed items)','0 €']],
-        theme: 'grid', styles:{ fontSize:11, cellPadding:6 }
+        theme: 'grid',
+        styles:{ fontSize:11, cellPadding:6 }
       });
 
-      // Totals block
       const y0 = (doc.lastAutoTable ? doc.lastAutoTable.finalY : 110) + 24;
       doc.setFont('helvetica','bold'); doc.setFontSize(13);
       doc.text('Summary', 40, y0);
@@ -582,18 +524,17 @@
       let y = y0 + 18;
       lines.forEach(t => { doc.text(t, 50, y); y += 16; });
 
-      // Filename
       const fname = `budget-${yyyy}-${mm}-${dd}_${hh}${mi}_${profile}.pdf`;
       doc.save(fname);
     }
 
-    // ===== PDF-nappi (ylhäällä) =====
+    // Ylänapin PDF
     pdfBtn.onclick = () => {
       const data = buildPayload();
       generatePDF(data);
     };
 
-    // ===== Reset (nollaa kaiken ja palaa oletuksiin englanniksi) =====
+    // Reset
     resetBtn.onclick = () => {
       incomeBaseEl.value = 0;
       fixedEl.innerHTML = ""; variableEl.innerHTML = "";
@@ -604,12 +545,13 @@
        .forEach(el => el && (el.value = 0));
       profileEl.value = 'employed';
       updateProfileUI(); statusEl.textContent = ""; recalc();
-      summaryCard.style.display = 'none'; // piilota summary resetissä
+      summaryCard.style.display = 'none';
     };
 
-    // ===== Tallennus GitHubiin → näyttää Summaryn + mahdollistaa PDF-latauksen =====
+    // Tallenna → näytä summary ja LATAA PDF AUTOMAATTISESTI
     saveBtn.onclick = async () => {
       statusEl.textContent = "Saving…";
+      saveBtn.disabled = true;
       const payload = buildPayload();
       try {
         const res = await fetch(`${API_BASE}/save-budget.php`, {
@@ -619,27 +561,22 @@
         if (!res.ok) throw new Error(data?.error || "Save failed");
         statusEl.textContent = `✅ Saved: ${data.path} (${(data.commitSha||'').slice(0,7)})`;
 
-        // Näytä yhteenveto ruudulla heti tallennuksen jälkeen
+        // Näytä summary
         renderSummary(payload);
 
-        // Summary-kortin "Download PDF" käyttää samaa generaattoria
+        // Lataa PDF automaattisesti tallennuksen jälkeen
+        generatePDF(payload);
+
+        // Summary-kortin oma latausnappi
         downloadAfterSaveBtn.onclick = () => generatePDF(payload);
 
       } catch (e) {
         statusEl.textContent = `❌ Error: ${e.message}`;
+      } finally {
+        saveBtn.disabled = false;
       }
     };
-
-    // ===== Admin → avaa GitHub upload-kansion (helpottaa tarkistusta) =====
-    adminBtn.onclick = () => {
-      const now = new Date();
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth()+1).padStart(2,'0');
-      const owner = "galaxy-delta";
-      const repo  = "WebSiteCV";
-      const branch= "main";
-      const url = `https://github.com/${owner}/${repo}/upload/${branch}/data/budgets/${yyyy}/${mm}`;
-      window.open(url, "_blank");
+    
     };
   </script>
 </body>
