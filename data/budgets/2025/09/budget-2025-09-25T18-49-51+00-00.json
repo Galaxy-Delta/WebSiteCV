@@ -1,0 +1,51 @@
+{
+    "meta": {
+        "type": "budget",
+        "profile": "employed",
+        "createdAt": "2025-09-25T18:49:51.193Z",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 OPR/121.0.0.0"
+    },
+    "income": {
+        "base": 333,
+        "student": null,
+        "family": null
+    },
+    "costs": {
+        "fixed": [
+            {
+                "name": "Vuokra",
+                "value": 333
+            },
+            {
+                "name": "Sähkö",
+                "value": 333
+            },
+            {
+                "name": "Netti",
+                "value": 33
+            },
+            {
+                "name": "Puhelin",
+                "value": 33
+            }
+        ],
+        "variable": [
+            {
+                "name": "Ruoka",
+                "value": 0
+            },
+            {
+                "name": "Liikenne",
+                "value": 0
+            }
+        ],
+        "student": null,
+        "family": null
+    },
+    "sums": {
+        "totalIncome": 333,
+        "totalCosts": 732,
+        "leftover": -399,
+        "savePct": -120
+    }
+}
