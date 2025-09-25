@@ -52,7 +52,7 @@
     .row{ display:grid; grid-template-columns:1fr 140px 44px; gap:8px; margin-bottom:8px; align-items:center; }
     .row button{ width:44px; height:48px; border:1px solid var(--line); border-radius:0; background:#0f0f0f; color:var(--text); cursor:pointer }
     .row button:hover{ background:#151515 }
-    .btn{ padding:12px 16px; border-radius:0; border:1px solid var(--line); background:#0f0f0f; color:var(--text); cursor:pointer;
+    .btn{ padding:12px 16px; border-radius:0; border:1px solid var(--line); background:#0f0f0f; color:#ededed; cursor:pointer;
       margin-right:8px; min-height:48px; font-weight:600; }
     .btn:hover{ background:#151515 }
     .btn:disabled{ opacity:.6; cursor:not-allowed }
@@ -182,7 +182,7 @@
           <button class="btn primary" id="saveBtn" disabled>Save to GitHub</button>
           <button class="btn" id="pdfBtn">Download PDF</button>
           <button class="btn" id="resetBtn">Reset</button>
-          <button class="btn" id="adminBtn">Open Admin</button>
+          <!-- Admin-nappi poistettu -->
         </div>
         <div class="hint">Saving calls <code>/save-budget.php</code> on Render (PHP).</div>
         <div id="status" class="hint" style="margin-top:10px;"></div>
@@ -219,7 +219,6 @@
     const saveBtn = document.getElementById('saveBtn');
     const pdfBtn = document.getElementById('pdfBtn');
     const resetBtn = document.getElementById('resetBtn');
-    const adminBtn = document.getElementById('adminBtn');
     const statusEl = document.getElementById('status');
 
     const summaryCard = document.getElementById('summaryCard');
@@ -445,7 +444,7 @@
       summaryCard.scrollIntoView({ behavior:'smooth', block:'start' });
     }
 
-    // PDF:n generointi (KORJAUS: käytä doc.autoTable, ei window.jspdfAutoTable)
+    // PDF:n generointi
     function generatePDF(data){
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ unit:'pt', format:'a4' });
@@ -576,8 +575,8 @@
         saveBtn.disabled = false;
       }
     };
-    
-    };
+
+    // Admin-nappi ja siihen liittyvä JS poistettu kokonaan
   </script>
 </body>
 </html>
