@@ -4,49 +4,42 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Budjettilaskuri — DeltaINC</title>
+
+  <!-- ===== PDF-kirjastot (selainpuolella) ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.28/dist/jspdf.plugin.autotable.min.js"></script>
+
   <style>
     /* ===== Design tokens ===== */
     :root{
-      --bg:#121212;
-      --panel:#1a1a1a;
-      --muted:#2a2a2a;
-      --text:#ededed;
-      --subtle:#bdbdbd;
-      --line:#3a3a3a;
-      --ok:#a3e635;    /* vihreä */
-      --warn:#fbbf24;  /* keltainen */
-      --bad:#fb7185;   /* punainen */
-      --accent:#60a5fa;/* sininen */
+      --bg:#121212; --panel:#1a1a1a; --muted:#2a2a2a; --text:#ededed; --subtle:#bdbdbd; --line:#3a3a3a;
+      --ok:#a3e635; --warn:#fbbf24; --bad:#fb7185; --accent:#60a5fa;
     }
-
     /* ===== Global ===== */
     html,body{height:100%}
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
+    body{ margin:0; background:var(--bg); color:var(--text);
       font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      -webkit-font-smoothing:antialiased;
-      text-rendering:optimizeLegibility;
-    }
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
     *{box-sizing:border-box}
 
     /* ===== LOGO (säilytetty) ===== */
-    .logo {
-      display:block; width:max-content; margin:30px auto; text-align:center;
+    .logo { display:block; width:max-content; margin:30px auto; text-align:center;
       font-size:64px; font-weight:700; color:gray17; text-shadow:3px 3px 8px black;
-      padding:30px 0; letter-spacing:4px;
-    }
+      padding:30px 0; letter-spacing:4px; }
 
     /* ===== NAVIGAATIO (säilytetty) ===== */
-    .navbar { overflow:visible; background-color:gray17; border-top:1px solid #666; border-bottom:1px solid #666; position:sticky; top:0; z-index:3000; }
+    .navbar { overflow:visible; background-color:gray17; border-top:1px solid #666; border-bottom:1px solid #666;
+      position:sticky; top:0; z-index:3000; }
     .navbar::after { content:""; display:table; clear:both; }
     .navbar a { float:left; font-size:16px; color:white; text-align:center; padding:14px 16px; text-decoration:none; }
     .dropdown { float:left; overflow:visible; position:relative; }
-    .dropdown .dropbtn { font-size:16px; border:none; outline:none; color:white; padding:14px 16px; background-color:inherit; font-family:inherit; margin:0; cursor:pointer; }
+    .dropdown .dropbtn { font-size:16px; border:none; outline:none; color:white; padding:14px 16px; background-color:inherit;
+      font-family:inherit; margin:0; cursor:pointer; }
     .navbar a:hover, .dropdown:hover .dropbtn { background-color:#666; }
-    .dropdown-content { display:none; position:absolute; top:100%; left:0; background-color:gray; min-width:200px; z-index:4000; box-shadow:0px 8px 16px rgba(0,0,0,0.2); border-radius:0; overflow:hidden; }
-    .dropdown-content a { float:none; color:black; padding:12px 16px; text-decoration:none; display:block; text-align:left; border-bottom:1px solid #eee; }
+    .dropdown-content { display:none; position:absolute; top:100%; left:0; background-color:gray; min-width:200px; z-index:4000;
+      box-shadow:0px 8px 16px rgba(0,0,0,0.2); border-radius:0; overflow:hidden; }
+    .dropdown-content a { float:none; color:black; padding:12px 16px; text-decoration:none; display:block; text-align:left;
+      border-bottom:1px solid #eee; }
     .dropdown-content a:last-child { border-bottom:none; }
     .dropdown-content a:hover { background-color:#ddd; }
     .dropdown:hover .dropdown-content { display:block; }
@@ -55,33 +48,21 @@
     .wrap{ max-width:1200px; margin:24px auto; padding:0 16px 64px; }
     h1{ margin:0 0 16px; letter-spacing:.5px; font-size:clamp(22px,2.4vw,28px); }
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(12, 1fr);
-      gap:14px;
-    }
+    .grid{ display:grid; grid-template-columns:repeat(12, 1fr); gap:14px; }
+
     /* panels: no rounded corners, subtle borders */
-    .card{
-      background:linear-gradient(180deg, var(--panel), #151515);
-      border:1px solid var(--line);
-      border-radius:0;
-      padding:16px;
-      box-shadow:0 8px 20px rgba(0,0,0,.25);
-    }
+    .card{ background:linear-gradient(180deg, var(--panel), #151515); border:1px solid var(--line); border-radius:0; padding:16px;
+      box-shadow:0 8px 20px rgba(0,0,0,.25); }
     .card h3{ margin:0 0 12px; font-size:clamp(16px,2vw,18px); letter-spacing:.3px }
     .card h4{ margin:10px 0; font-size:14px; color:var(--subtle); font-weight:600 }
 
-    /* column spans (desktop = 2 cols + 2 cols + 2 cols + 6 col summary) */
-    .col-6{ grid-column:span 6 }
-    .col-12{ grid-column:span 12 }
+    .col-6{ grid-column:span 6 } .col-12{ grid-column:span 12 }
 
     /* Inputs */
     label{ display:block; font-size:.9rem; color:var(--subtle); margin:0 0 6px }
     input[type="number"], input[type="text"], select{
-      width:100%; background:#0f0f0f; color:var(--text);
-      border:1px solid var(--line); border-radius:0; padding:12px 12px;
-      min-height:48px; font-size:16px;
-    }
+      width:100%; background:#0f0f0f; color:var(--text); border:1px solid var(--line); border-radius:0; padding:12px 12px;
+      min-height:48px; font-size:16px; }
     input:focus, select:focus{ outline:2px solid var(--accent); outline-offset:0; border-color:var(--accent) }
 
     /* Rows for dynamic items */
@@ -90,10 +71,8 @@
     .row button:hover{ background:#151515 }
 
     /* Buttons */
-    .btn{
-      padding:12px 16px; border-radius:0; border:1px solid var(--line);
-      background:#0f0f0f; color:var(--text); cursor:pointer; margin-right:8px; min-height:48px; font-weight:600;
-    }
+    .btn{ padding:12px 16px; border-radius:0; border:1px solid var(--line); background:#0f0f0f; color:var(--text); cursor:pointer;
+      margin-right:8px; min-height:48px; font-weight:600; }
     .btn:hover{ background:#151515 }
     .btn:disabled{ opacity:.6; cursor:not-allowed }
     .btn.primary{ background:var(--accent); border-color:var(--accent); color:#0b1220; }
@@ -101,10 +80,7 @@
 
     /* Totals badges → square chips */
     .totals{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:8px }
-    .pill{
-      padding:10px 12px; border-radius:0; background:#0f0f0f; border:1px solid var(--line);
-      font-variant-numeric:tabular-nums;
-    }
+    .pill{ padding:10px 12px; border-radius:0; background:#0f0f0f; border:1px solid var(--line); font-variant-numeric:tabular-nums; }
     .ok{ color:var(--ok) } .warn{ color:var(--warn) } .bad{ color:var(--bad) }
     .hint{ font-size:.9rem; color:var(--subtle); margin-top:8px }
 
@@ -113,7 +89,6 @@
 
     hr{ border:0; border-top:1px solid var(--line); margin:12px 0 }
 
-    /* Sticky action bar inside summary on small screens */
     .actions{ display:flex; gap:8px; flex-wrap:wrap }
     @media (max-width: 900px){
       .grid{ grid-template-columns:1fr }
@@ -123,10 +98,7 @@
       .twocol{ grid-template-columns:1fr }
     }
 
-    /* Reduce motion if user prefers */
-    @media (prefers-reduced-motion: reduce){
-      *{ scroll-behavior:auto; transition:none !important }
-    }
+    @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto; transition:none !important } }
   </style>
 </head>
 <body>
@@ -136,50 +108,13 @@
 
   <!-- ===== NAVIGAATIO ===== -->
   <div class="navbar">
-    <div class="dropdown">
-      <button class="dropbtn">HomePage</button>
-      <div class="dropdown-content">
-        <a href="/OmaWEB.html">HomePage</a>
-      </div>
-    </div>
-    <div class="dropdown">
-      <button class="dropbtn">Blender</button>
-      <div class="dropdown-content">
-        <a href="/blender.html">Projects</a>
-      </div>
-    </div>
-    <div class="dropdown">
-      <button class="dropbtn">CV</button>
-      <div class="dropdown-content">
-        <a href="/cv.html">CV</a>
-      </div>
-    </div>
-    <div class="dropdown">
-      <button class="dropbtn">Projects</button>
-      <div class="dropdown-content">
-        <a href="/pro.html">Gameprojects</a>
-        <a href="https://galaxy-delta.itch.io/" target="_blank" rel="noopener">Itchio-page</a>
-      </div>
-    </div>
-    <div class="dropdown">
-      <button class="dropbtn">Tools</button>
-      <div class="dropdown-content">
-        <a href="/budget.html">Budget Planner</a>
-      </div>
-    </div>
-    <div class="dropdown">
-      <button class="dropbtn">Social Media</button>
-      <div class="dropdown-content">
-        <a href="https://www.youtube.com/@PelataanJ/videos" target="_blank" rel="noopener">YouTube</a>
-        <a href="https://www.twitch.tv/galaxy_delta" target="_blank" rel="noopener">Twitch</a>
-      </div>
-    </div>
-    <div class="dropdown">
-      <button class="dropbtn">Contact me</button>
-      <div class="dropdown-content">
-        <a href="mailto:jep.knuutinen@gmail.com">E-mail</a>
-      </div>
-    </div>
+    <div class="dropdown"><button class="dropbtn">HomePage</button><div class="dropdown-content"><a href="/OmaWEB.html">HomePage</a></div></div>
+    <div class="dropdown"><button class="dropbtn">Blender</button><div class="dropdown-content"><a href="/blender.html">Projects</a></div></div>
+    <div class="dropdown"><button class="dropbtn">CV</button><div class="dropdown-content"><a href="/cv.html">CV</a></div></div>
+    <div class="dropdown"><button class="dropbtn">Projects</button><div class="dropdown-content"><a href="/pro.html">Gameprojects</a><a href="https://galaxy-delta.itch.io/" target="_blank" rel="noopener">Itchio-page</a></div></div>
+    <div class="dropdown"><button class="dropbtn">Tools</button><div class="dropdown-content"><a href="/budget.html">Budget Planner</a></div></div>
+    <div class="dropdown"><button class="dropbtn">Social Media</button><div class="dropdown-content"><a href="https://www.youtube.com/@PelataanJ/videos" target="_blank" rel="noopener">YouTube</a><a href="https://www.twitch.tv/galaxy_delta" target="_blank" rel="noopener">Twitch</a></div></div>
+    <div class="dropdown"><button class="dropbtn">Contact me</button><div class="dropdown-content"><a href="mailto:jep.knuutinen@gmail.com">E-mail</a></div></div>
   </div>
 
   <div class="wrap">
@@ -205,7 +140,6 @@
         <h3>Tulot</h3>
         <label>Työ / muu netto/kk (€)</label>
         <input id="incomeBase" type="number" inputmode="numeric" min="0" step="1" value="0" />
-
         <!-- Opiskelija-lisätulot -->
         <div id="studentIncomes" style="display:none; margin-top:12px;">
           <hr><h4>Opiskelijan tulot</h4>
@@ -214,7 +148,6 @@
           <div class="minirow"><label>Opintolainan nosto (€/kk)</label><input id="stuLoanDraw" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
           <div class="hint">Lainan nosto kasvattaa kassavirtaa mutta on velkaa.</div>
         </div>
-
         <!-- Lapsiperhe-lisätulot -->
         <div id="familyIncomes" style="display:none; margin-top:12px;">
           <hr><h4>Lapsiperheen tulot</h4>
@@ -242,7 +175,6 @@
       <!-- Profiilikohtaiset kulut -->
       <div class="card col-6">
         <h3>Profiilikohtaiset kulut</h3>
-
         <div id="studentCosts" style="display:none;">
           <h4>Opiskelijan kulut</h4>
           <div class="minirow"><label>YTHS/FSHS (€/kk)</label><input id="stuFshs" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
@@ -279,6 +211,7 @@
 
         <div class="actions" style="margin-top:10px;">
           <button class="btn primary" id="saveBtn" disabled>Tallenna GitHubiin</button>
+          <button class="btn" id="pdfBtn">Lataa PDF</button> <!-- UUSI NAPPI -->
           <button class="btn" id="resetBtn">Tyhjennä</button>
           <button class="btn" id="adminBtn">Avaa Admin</button>
         </div>
@@ -307,6 +240,7 @@
     const leftoverEl = document.getElementById('leftover');
     const savePctEl = document.getElementById('savePct');
     const saveBtn = document.getElementById('saveBtn');
+    const pdfBtn = document.getElementById('pdfBtn');      // UUSI
     const resetBtn = document.getElementById('resetBtn');
     const adminBtn = document.getElementById('adminBtn');
     const statusEl = document.getElementById('status');
@@ -342,12 +276,9 @@
     const makeRow = (name="", value=0, container) => {
       const row = document.createElement('div');
       row.className = 'row';
-      const nameI = document.createElement('input');
-      nameI.type = 'text'; nameI.placeholder = 'Nimi'; nameI.value = name;
-      const valI = document.createElement('input');
-      valI.type = 'number'; valI.min = "0"; valI.step = "1"; valI.value = value; valI.inputMode="numeric";
-      const del = document.createElement('button');
-      del.textContent = '–'; del.title = 'Poista';
+      const nameI = document.createElement('input'); nameI.type = 'text'; nameI.placeholder = 'Nimi'; nameI.value = name;
+      const valI = document.createElement('input'); valI.type = 'number'; valI.min = "0"; valI.step = "1"; valI.value = value; valI.inputMode="numeric";
+      const del = document.createElement('button'); del.textContent = '–'; del.title = 'Poista';
       del.onclick = () => { row.remove(); recalc(); };
       [nameI, valI].forEach(el => el.addEventListener('input', recalc));
       row.append(nameI, valI, del);
@@ -380,7 +311,6 @@
       [stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl, stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
        famChildBenefitEl, famOtherBenefitEl, famChildrenCountEl, famDaycareEl, famHobbiesEl, famFoodEl, famSuppliesEl]
        .forEach(el => el && (el.value = 0));
-
       if (p === 'student') {
         stuGrantEl.value = 300; stuHousingEl.value = 350; stuLoanDrawEl.value = 250;
         stuFshsEl.value = 10;  stuTransportEl.value = 35; stuLunchPriceEl.value = 2.95; stuLunchCountEl.value = 20;
@@ -435,40 +365,18 @@
       saveBtn.disabled = !(totalIncome > 0 || totalCosts > 0);
     }
 
-    // Eventit
     [
       incomeBaseEl, stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl,
       stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
       famChildBenefitEl, famOtherBenefitEl, famChildrenCountEl, famDaycareEl, famHobbiesEl, famFoodEl, famSuppliesEl
     ].forEach(el => el && el.addEventListener('input', recalc));
-
     incomeBaseEl.addEventListener('input', recalc);
     recalc();
 
-    // Reset
-    resetBtn.onclick = () => {
-      incomeBaseEl.value = 0;
-      fixedEl.innerHTML = "";
-      variableEl.innerHTML = "";
-      ["Vuokra","Sähkö","Netti","Puhelin"].forEach(n => makeRow(n, 0, fixedEl));
-      ["Ruoka","Liikenne"].forEach(n => makeRow(n, 0, variableEl));
-
-      [stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl, stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
-       famChildBenefitEl, famOtherBenefitEl, famChildrenCountEl, famDaycareEl, famHobbiesEl, famFoodEl, famSuppliesEl]
-       .forEach(el => el && (el.value = 0));
-
-      profileEl.value = 'employed';
-      updateProfileUI();
-      statusEl.textContent = "";
-      recalc();
-    };
-
-    // Tallennus (PHP)
-    saveBtn.onclick = async () => {
-      statusEl.textContent = "Tallennetaan…";
+    // ===== SUOMEKSI: Rakenna yhteinen payload (PDF + tallennus käyttää tätä) =====
+    function buildPayload(){
       const p = profileEl.value;
-
-      const payload = {
+      return {
         meta: { type:"budget", profile:p, createdAt:new Date().toISOString(), userAgent:navigator.userAgent },
         income: {
           base: Number(incomeBaseEl.value||0),
@@ -498,7 +406,112 @@
           leftover:Number(leftoverEl.textContent), savePct:Number(savePctEl.textContent)
         }
       };
+    }
 
+    // ===== SUOMEKSI: PDF-lataus (jsPDF + autoTable) =====
+    pdfBtn.onclick = () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit:'pt', format:'a4' }); // pisteet, A4
+
+      const data = buildPayload();
+      const profile = data.meta.profile;
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth()+1).padStart(2,'0');
+      const dd = String(now.getDate()).padStart(2,'0');
+      const hh = String(now.getHours()).padStart(2,'0');
+      const mi = String(now.getMinutes()).padStart(2,'0');
+
+      // Otsikko
+      doc.setFont('helvetica','bold'); doc.setFontSize(20);
+      doc.text('DeltaINC — Budjettiraportti', 40, 50);
+      doc.setFont('helvetica','normal'); doc.setFontSize(11);
+      doc.text(`Päiväys: ${yyyy}-${mm}-${dd}  ${hh}:${mi}`, 40, 70);
+      doc.text(`Profiili: ${profile}`, 40, 86);
+
+      // Tulot-taulukko
+      const incomeRows = [];
+      if (data.income.base) incomeRows.push(['Työ/muu netto', `${data.income.base} €`]);
+      if (data.income.student){
+        const s = data.income.student;
+        if (s.grant)    incomeRows.push(['Opintotuki', `${s.grant} €`]);
+        if (s.housing)  incomeRows.push(['Asumistuki', `${s.housing} €`]);
+        if (s.loanDraw) incomeRows.push(['Opintolaina nosto', `${s.loanDraw} €`]);
+      }
+      if (data.income.family){
+        const f = data.income.family;
+        if (f.childBenefit) incomeRows.push(['Lapsilisä', `${f.childBenefit} €`]);
+        if (f.otherBenefit) incomeRows.push(['Muu perhetuki', `${f.otherBenefit} €`]);
+      }
+      window.jspdfAutoTable(doc, {
+        startY: 110,
+        head: [['Tulot', 'Summa']],
+        body: incomeRows.length ? incomeRows : [['(ei eriteltyjä tuloja)','0 €']],
+        theme: 'grid', styles:{ fontSize:11, cellPadding:6 }
+      });
+
+      // Kulut-taulukot: kiinteät + muuttuvat yhdistettynä
+      const costRows = [];
+      (data.costs.fixed || []).forEach(r => costRows.push([`Kiinteä: ${r.name}`, `${r.value} €`]));
+      (data.costs.variable || []).forEach(r => costRows.push([`Muuttuva: ${r.name}`, `${r.value} €`]));
+      if (data.costs.student){
+        const s = data.costs.student;
+        if (s.fshs)      costRows.push(['YTHS/FSHS', `${s.fshs} €`]);
+        if (s.transport) costRows.push(['Julkinen (opiskelija)', `${s.transport} €`]);
+        if (s.lunchTotal)costRows.push(['Opiskelijalounaat yht.', `${s.lunchTotal} €`]);
+        if (s.supplies)  costRows.push(['Tarvikkeet', `${s.supplies} €`]);
+        if (s.union)     costRows.push(['Opiskelijajärjestö', `${s.union} €`]);
+      }
+      if (data.costs.family){
+        const f = data.costs.family;
+        if (f.daycare)  costRows.push(['Päivähoitomaksut', `${f.daycare} €`]);
+        if (f.hobbies)  costRows.push(['Harrastukset (lapset)', `${f.hobbies} €`]);
+        if (f.food)     costRows.push(['Ruoka (lapset)', `${f.food} €`]);
+        if (f.supplies) costRows.push(['Vaipat / tarvikkeet', `${f.supplies} €`]);
+      }
+      window.jspdfAutoTable(doc, {
+        startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + 18 : 180,
+        head: [['Kulut', 'Summa']],
+        body: costRows.length ? costRows : [['(ei eriteltyjä kuluja)','0 €']],
+        theme: 'grid', styles:{ fontSize:11, cellPadding:6 }
+      });
+
+      // Yhteenveto-boksi
+      const y0 = (doc.lastAutoTable ? doc.lastAutoTable.finalY : 110) + 24;
+      doc.setFont('helvetica','bold'); doc.setFontSize(13);
+      doc.text('Yhteenveto', 40, y0);
+      doc.setFont('helvetica','normal'); doc.setFontSize(12);
+      const lines = [
+        `Tulot yhteensä: ${data.sums.totalIncome} €`,
+        `Kulut yhteensä: ${data.sums.totalCosts} €`,
+        `Jäljelle: ${data.sums.leftover} €`,
+        `Säästö-%: ${data.sums.savePct} %`
+      ];
+      let y = y0 + 18;
+      lines.forEach(t => { doc.text(t, 50, y); y += 16; });
+
+      // Tiedostonimi
+      const fname = `budget-${yyyy}-${mm}-${dd}_${hh}${mi}_${profile}.pdf`;
+      doc.save(fname);
+    };
+
+    // Reset
+    resetBtn.onclick = () => {
+      incomeBaseEl.value = 0;
+      fixedEl.innerHTML = ""; variableEl.innerHTML = "";
+      ["Vuokra","Sähkö","Netti","Puhelin"].forEach(n => makeRow(n, 0, fixedEl));
+      ["Ruoka","Liikenne"].forEach(n => makeRow(n, 0, variableEl));
+      [stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl, stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
+       famChildBenefitEl, famOtherBenefitEl, famChildrenCountEl, famDaycareEl, famHobbiesEl, famFoodEl, famSuppliesEl]
+       .forEach(el => el && (el.value = 0));
+      profileEl.value = 'employed';
+      updateProfileUI(); statusEl.textContent = ""; recalc();
+    };
+
+    // Tallennus (PHP)
+    saveBtn.onclick = async () => {
+      statusEl.textContent = "Tallennetaan…";
+      const payload = buildPayload();
       try {
         const res = await fetch(`${API_BASE}/save-budget.php`, {
           method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(payload)
@@ -516,9 +529,9 @@
       const now = new Date();
       const yyyy = now.getFullYear();
       const mm = String(now.getMonth()+1).padStart(2,'0');
-      const owner = "galaxy-delta";   // muuta omaan
-      const repo  = "WebSiteCV";      // muuta omaan
-      const branch= "main";           // muuta omaan
+      const owner = "galaxy-delta";
+      const repo  = "WebSiteCV";
+      const branch= "main";
       const url = `https://github.com/${owner}/${repo}/upload/${branch}/data/budgets/${yyyy}/${mm}`;
       window.open(url, "_blank");
     };
