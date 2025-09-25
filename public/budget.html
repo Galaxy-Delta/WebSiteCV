@@ -5,110 +5,128 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Budjettilaskuri — DeltaINC</title>
   <style>
-    /* ===== LOGO ===== */
+    /* ===== Design tokens ===== */
+    :root{
+      --bg:#121212;
+      --panel:#1a1a1a;
+      --muted:#2a2a2a;
+      --text:#ededed;
+      --subtle:#bdbdbd;
+      --line:#3a3a3a;
+      --ok:#a3e635;    /* vihreä */
+      --warn:#fbbf24;  /* keltainen */
+      --bad:#fb7185;   /* punainen */
+      --accent:#60a5fa;/* sininen */
+    }
+
+    /* ===== Global ===== */
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    *{box-sizing:border-box}
+
+    /* ===== LOGO (säilytetty) ===== */
     .logo {
-      display: block;
-      width: max-content;
-      margin: 30px auto;
-      text-align: center;
-      font-size: 64px;
-      font-weight: 700;
-      color: gray17;
-      text-shadow: 3px 3px 8px black;
-      padding: 30px 0;
-      letter-spacing: 4px;
+      display:block; width:max-content; margin:30px auto; text-align:center;
+      font-size:64px; font-weight:700; color:gray17; text-shadow:3px 3px 8px black;
+      padding:30px 0; letter-spacing:4px;
     }
 
-    /* ===== NAVIGAATIO ===== */
-    .navbar {
-      overflow: visible;
-      background-color: gray17;
-      border-top: 1px solid #666;
-      border-bottom: 1px solid #666;
-      position: sticky;
-      top: 0;
-      z-index: 3000;
-    }
-    .navbar::after { content: ""; display: table; clear: both; }
+    /* ===== NAVIGAATIO (säilytetty) ===== */
+    .navbar { overflow:visible; background-color:gray17; border-top:1px solid #666; border-bottom:1px solid #666; position:sticky; top:0; z-index:3000; }
+    .navbar::after { content:""; display:table; clear:both; }
+    .navbar a { float:left; font-size:16px; color:white; text-align:center; padding:14px 16px; text-decoration:none; }
+    .dropdown { float:left; overflow:visible; position:relative; }
+    .dropdown .dropbtn { font-size:16px; border:none; outline:none; color:white; padding:14px 16px; background-color:inherit; font-family:inherit; margin:0; cursor:pointer; }
+    .navbar a:hover, .dropdown:hover .dropbtn { background-color:#666; }
+    .dropdown-content { display:none; position:absolute; top:100%; left:0; background-color:gray; min-width:200px; z-index:4000; box-shadow:0px 8px 16px rgba(0,0,0,0.2); border-radius:0; overflow:hidden; }
+    .dropdown-content a { float:none; color:black; padding:12px 16px; text-decoration:none; display:block; text-align:left; border-bottom:1px solid #eee; }
+    .dropdown-content a:last-child { border-bottom:none; }
+    .dropdown-content a:hover { background-color:#ddd; }
+    .dropdown:hover .dropdown-content { display:block; }
 
-    .navbar a {
-      float: left;
-      font-size: 16px;
-      color: white;
-      text-align: center;
-      padding: 14px 16px;
-      text-decoration: none;
+    /* ===== Layout for calculator ===== */
+    .wrap{ max-width:1200px; margin:24px auto; padding:0 16px 64px; }
+    h1{ margin:0 0 16px; letter-spacing:.5px; font-size:clamp(22px,2.4vw,28px); }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12, 1fr);
+      gap:14px;
+    }
+    /* panels: no rounded corners, subtle borders */
+    .card{
+      background:linear-gradient(180deg, var(--panel), #151515);
+      border:1px solid var(--line);
+      border-radius:0;
+      padding:16px;
+      box-shadow:0 8px 20px rgba(0,0,0,.25);
+    }
+    .card h3{ margin:0 0 12px; font-size:clamp(16px,2vw,18px); letter-spacing:.3px }
+    .card h4{ margin:10px 0; font-size:14px; color:var(--subtle); font-weight:600 }
+
+    /* column spans (desktop = 2 cols + 2 cols + 2 cols + 6 col summary) */
+    .col-6{ grid-column:span 6 }
+    .col-12{ grid-column:span 12 }
+
+    /* Inputs */
+    label{ display:block; font-size:.9rem; color:var(--subtle); margin:0 0 6px }
+    input[type="number"], input[type="text"], select{
+      width:100%; background:#0f0f0f; color:var(--text);
+      border:1px solid var(--line); border-radius:0; padding:12px 12px;
+      min-height:48px; font-size:16px;
+    }
+    input:focus, select:focus{ outline:2px solid var(--accent); outline-offset:0; border-color:var(--accent) }
+
+    /* Rows for dynamic items */
+    .row{ display:grid; grid-template-columns:1fr 140px 44px; gap:8px; margin-bottom:8px; align-items:center; }
+    .row button{ width:44px; height:48px; border:1px solid var(--line); border-radius:0; background:#0f0f0f; color:var(--text); cursor:pointer }
+    .row button:hover{ background:#151515 }
+
+    /* Buttons */
+    .btn{
+      padding:12px 16px; border-radius:0; border:1px solid var(--line);
+      background:#0f0f0f; color:var(--text); cursor:pointer; margin-right:8px; min-height:48px; font-weight:600;
+    }
+    .btn:hover{ background:#151515 }
+    .btn:disabled{ opacity:.6; cursor:not-allowed }
+    .btn.primary{ background:var(--accent); border-color:var(--accent); color:#0b1220; }
+    .btn.primary:hover{ filter:brightness(0.95) }
+
+    /* Totals badges → square chips */
+    .totals{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:8px }
+    .pill{
+      padding:10px 12px; border-radius:0; background:#0f0f0f; border:1px solid var(--line);
+      font-variant-numeric:tabular-nums;
+    }
+    .ok{ color:var(--ok) } .warn{ color:var(--warn) } .bad{ color:var(--bad) }
+    .hint{ font-size:.9rem; color:var(--subtle); margin-top:8px }
+
+    .minirow{ display:grid; grid-template-columns:1fr 150px; gap:8px; align-items:center; margin-bottom:8px }
+    .twocol{ display:grid; grid-template-columns:1fr 1fr; gap:10px }
+
+    hr{ border:0; border-top:1px solid var(--line); margin:12px 0 }
+
+    /* Sticky action bar inside summary on small screens */
+    .actions{ display:flex; gap:8px; flex-wrap:wrap }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns:1fr }
+      .col-6, .col-12{ grid-column:1 }
+      .row{ grid-template-columns:1fr 120px 44px }
+      .actions .btn{ flex:1 1 100% } /* täysleveät napit mobiilissa */
+      .twocol{ grid-template-columns:1fr }
     }
 
-    /* ===== DROPDOWNIT ===== */
-    .dropdown {
-      float: left;
-      overflow: visible;
-      position: relative;
+    /* Reduce motion if user prefers */
+    @media (prefers-reduced-motion: reduce){
+      *{ scroll-behavior:auto; transition:none !important }
     }
-    .dropdown .dropbtn {
-      font-size: 16px;    
-      border: none;
-      outline: none;
-      color: white;
-      padding: 14px 16px;
-      background-color: inherit;
-      font-family: inherit;
-      margin: 0;
-      cursor: pointer;
-    }
-    .navbar a:hover, .dropdown:hover .dropbtn { background-color: #666; }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background-color: gray;
-      min-width: 200px;
-      z-index: 4000;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .dropdown-content a {
-      float: none;
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-    }
-    .dropdown-content a:last-child { border-bottom: none; }
-    .dropdown-content a:hover { background-color: #ddd; }
-    .dropdown:hover .dropdown-content { display: block; }
-
-    /* ===== SISÄLTÖ (budjettilaskuri) ===== */
-    body { background:#1f1f1f; color:#eee; font-family:system-ui, Arial; margin:0; }
-    .wrap { max-width:1100px; margin:24px auto; padding:16px; }
-    h1 { margin:0 0 16px; letter-spacing:1px; }
-    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .card { background:#2a2a2a; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:16px; }
-    label { display:block; font-size:.9rem; opacity:.9; margin-bottom:6px; }
-    input[type="number"], input[type="text"], select {
-      width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
-      background:#1d1d1d; color:#fff; box-sizing:border-box;
-    }
-    .row { display:grid; grid-template-columns:1fr 130px 44px; gap:8px; margin-bottom:8px; align-items:center; }
-    .row button { width:44px; height:40px; border-radius:10px; border:1px solid rgba(255,255,255,.12); background:#202020; color:#fff; cursor:pointer;}
-    .btn {
-      padding:12px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.18);
-      background:#232323; color:#fff; cursor:pointer; margin-right:8px;
-    }
-    .btn:disabled { opacity:.6; cursor:not-allowed; }
-    .totals { display:flex; gap:16px; flex-wrap:wrap; }
-    .pill { padding:10px 12px; border-radius:999px; background:#222; border:1px solid rgba(255,255,255,.1); }
-    .hint { font-size:.85rem; opacity:.75; margin-top:8px;}
-    .minirow { display:grid; grid-template-columns:1fr 130px; gap:8px; align-items:center; margin-bottom:8px; }
-    .twocol { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    @media (max-width: 1000px){ .grid { grid-template-columns:1fr; } .twocol { grid-template-columns:1fr; } }
-    hr { border:0; border-top:1px solid rgba(255,255,255,.1); margin:12px 0; }
   </style>
 </head>
 <body>
@@ -118,31 +136,24 @@
 
   <!-- ===== NAVIGAATIO ===== -->
   <div class="navbar">
-    <!-- --- HomePage --- -->
     <div class="dropdown">
       <button class="dropbtn">HomePage</button>
       <div class="dropdown-content">
         <a href="/OmaWEB.html">HomePage</a>
       </div>
     </div>
-
-    <!-- --- Blender --- -->
     <div class="dropdown">
       <button class="dropbtn">Blender</button>
       <div class="dropdown-content">
         <a href="/blender.html">Projects</a>
       </div>
     </div>
-    
-    <!-- --- CV --- -->
     <div class="dropdown">
       <button class="dropbtn">CV</button>
       <div class="dropdown-content">
         <a href="/cv.html">CV</a>
       </div>
     </div>
-
-    <!-- --- Projects --- -->
     <div class="dropdown">
       <button class="dropbtn">Projects</button>
       <div class="dropdown-content">
@@ -150,17 +161,12 @@
         <a href="https://galaxy-delta.itch.io/" target="_blank" rel="noopener">Itchio-page</a>
       </div>
     </div>
-
-    <!-- --- Tools --- -->
     <div class="dropdown">
       <button class="dropbtn">Tools</button>
       <div class="dropdown-content">
         <a href="/budget.html">Budget Planner</a>
-        <!-- lisää myöhemmin: /request.php, /palkkalaskin.php jne -->
       </div>
     </div>
-
-    <!-- --- Social --- -->
     <div class="dropdown">
       <button class="dropbtn">Social Media</button>
       <div class="dropdown-content">
@@ -168,8 +174,6 @@
         <a href="https://www.twitch.tv/galaxy_delta" target="_blank" rel="noopener">Twitch</a>
       </div>
     </div>
-
-    <!-- --- Contact --- -->
     <div class="dropdown">
       <button class="dropbtn">Contact me</button>
       <div class="dropdown-content">
@@ -181,133 +185,90 @@
   <div class="wrap">
     <h1>Budjettilaskuri</h1>
 
-    <div class="card">
-      <!-- ===== SUOMEKSI: Profiilin valinta ohjaa mitä lisäpaneeleita näytetään ===== -->
+    <!-- Profiilin valinta -->
+    <div class="card col-12" style="margin-bottom:14px">
       <label for="profile"><strong>Valitse profiili</strong></label>
-      <select id="profile">
-        <option value="employed">Työssäkäyvä</option>
-        <option value="student">Opiskelija</option>
-        <option value="family">Lapsiperhe</option>
-      </select>
-      <div style="margin-top:10px;">
-        <button class="btn" id="presetBtn">Apply preset for profile</button>
+      <div class="twocol">
+        <select id="profile">
+          <option value="employed">Työssäkäyvä</option>
+          <option value="student">Opiskelija</option>
+          <option value="family">Lapsiperhe</option>
+        </select>
+        <button class="btn primary" id="presetBtn">Apply preset for profile</button>
       </div>
       <div class="hint">Profiili määrittää lisätulot (tuet/laina) ja lisäkulut (päiväkoti, lounaat, jne.)</div>
     </div>
 
     <div class="grid">
-      <div class="card">
+      <!-- Tulot -->
+      <div class="card col-6">
         <h3>Tulot</h3>
         <label>Työ / muu netto/kk (€)</label>
-        <input id="incomeBase" type="number" min="0" step="1" value="0" />
+        <input id="incomeBase" type="number" inputmode="numeric" min="0" step="1" value="0" />
 
+        <!-- Opiskelija-lisätulot -->
         <div id="studentIncomes" style="display:none; margin-top:12px;">
-          <hr>
-          <h4>Opiskelijan tulot</h4>
-          <div class="minirow">
-            <label>Opintotuki (€/kk)</label>
-            <input id="stuGrant" type="number" min="0" step="1" value="0" />
-          </div>
-          <div class="minirow">
-            <label>Asumistuki (€/kk)</label>
-            <input id="stuHousing" type="number" min="0" step="1" value="0" />
-          </div>
-          <div class="minirow">
-            <label>Opintolainan nosto (€/kk)</label>
-            <input id="stuLoanDraw" type="number" min="0" step="1" value="0" />
-          </div>
-          <div class="hint">Lainan nosto kasvattaa kassavirtaa mutta on velkaa (huomioi erikseen jos haluat).</div>
+          <hr><h4>Opiskelijan tulot</h4>
+          <div class="minirow"><label>Opintotuki (€/kk)</label><input id="stuGrant" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
+          <div class="minirow"><label>Asumistuki (€/kk)</label><input id="stuHousing" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
+          <div class="minirow"><label>Opintolainan nosto (€/kk)</label><input id="stuLoanDraw" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
+          <div class="hint">Lainan nosto kasvattaa kassavirtaa mutta on velkaa.</div>
         </div>
 
+        <!-- Lapsiperhe-lisätulot -->
         <div id="familyIncomes" style="display:none; margin-top:12px;">
-          <hr>
-          <h4>Lapsiperheen tulot</h4>
-          <div class="minirow">
-            <label>Lapsilisä yhteensä (€/kk)</label>
-            <input id="famChildBenefit" type="number" min="0" step="1" value="0" />
-          </div>
-          <div class="minirow">
-            <label>Muu perhetuki (€/kk)</label>
-            <input id="famOtherBenefit" type="number" min="0" step="1" value="0" />
-          </div>
+          <hr><h4>Lapsiperheen tulot</h4>
+          <div class="minirow"><label>Lapsilisä yhteensä (€/kk)</label><input id="famChildBenefit" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
+          <div class="minirow"><label>Muu perhetuki (€/kk)</label><input id="famOtherBenefit" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
         </div>
       </div>
 
-      <div class="card">
+      <!-- Kiinteät kulut -->
+      <div class="card col-6">
         <h3>Kiinteät kulut (€/kk)</h3>
         <div id="fixed"></div>
         <button class="btn" id="addFixed">+ Lisää kulu</button>
         <div class="hint">Esim: Vuokra, Sähkö, Netti, Puhelin…</div>
       </div>
 
-      <div class="card">
+      <!-- Muuttuvat kulut -->
+      <div class="card col-6">
         <h3>Muuttuvat kulut (€/kk)</h3>
         <div id="variable"></div>
         <button class="btn" id="addVariable">+ Lisää kulu</button>
         <div class="hint">Esim: Ruoka, Liikenne, Harrastukset, Vaatteet…</div>
       </div>
 
-      <div class="card">
+      <!-- Profiilikohtaiset kulut -->
+      <div class="card col-6">
         <h3>Profiilikohtaiset kulut</h3>
 
         <div id="studentCosts" style="display:none;">
           <h4>Opiskelijan kulut</h4>
-          <div class="minirow">
-            <label>YTHS/FSHS kuukausijaolla (€/kk)</label>
-            <input id="stuFshs" type="number" min="0" step="1" value="0" />
-          </div>
-          <div class="minirow">
-            <label>Julkinen liikenne (opiskelija) (€/kk)</label>
-            <input id="stuTransport" type="number" min="0" step="1" value="0" />
-          </div>
+          <div class="minirow"><label>YTHS/FSHS (€/kk)</label><input id="stuFshs" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
+          <div class="minirow"><label>Julkinen (opiskelija) (€/kk)</label><input id="stuTransport" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
           <div class="twocol">
-            <div class="minirow">
-              <label>Opiskelijalounas netto (€/ateria)</label>
-              <input id="stuLunchPrice" type="number" min="0" step="0.1" value="0" />
-            </div>
-            <div class="minirow">
-              <label>Aterioita / kk</label>
-              <input id="stuLunchCount" type="number" min="0" step="1" value="0" />
-            </div>
+            <div class="minirow"><label>Opiskelijalounas (€/ateria)</label><input id="stuLunchPrice" type="number" inputmode="decimal" min="0" step="0.1" value="0" /></div>
+            <div class="minirow"><label>Aterioita / kk</label><input id="stuLunchCount" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
           </div>
-          <div class="minirow">
-            <label>Tarvikkeet (avg €/kk)</label>
-            <input id="stuSupplies" type="number" min="0" step="1" value="0" />
-          </div>
-          <div class="minirow">
-            <label>Opiskelijajärjestö (€/kk)</label>
-            <input id="stuUnion" type="number" min="0" step="1" value="0" />
-          </div>
+          <div class="minirow"><label>Tarvikkeet (€/kk)</label><input id="stuSupplies" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
+          <div class="minirow"><label>Opiskelijajärjestö (€/kk)</label><input id="stuUnion" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
         </div>
 
         <div id="familyCosts" style="display:none;">
           <h4>Lapsiperheen kulut</h4>
-          <div class="minirow">
-            <label>Lasten määrä</label>
-            <input id="famChildrenCount" type="number" min="0" step="1" value="0" />
-          </div>
-          <div class="minirow">
-            <label>Päivähoitomaksut yhteensä (€/kk)</label>
-            <input id="famDaycare" type="number" min="0" step="1" value="0" />
-          </div>
-          <div class="minirow">
-            <label>Harrastukset lapset (€/kk)</label>
-            <input id="famHobbies" type="number" min="0" step="1" value="0" />
-          </div>
-          <div class="minirow">
-            <label>Ruoka lapsille (€/kk)</label>
-            <input id="famFood" type="number" min="0" step="1" value="0" />
-          </div>
-          <div class="minirow">
-            <label>Vaipat / tarvikkeet (€/kk)</label>
-            <input id="famSupplies" type="number" min="0" step="1" value="0" />
-          </div>
+          <div class="minirow"><label>Lasten määrä</label><input id="famChildrenCount" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
+          <div class="minirow"><label>Päivähoitomaksut (€/kk)</label><input id="famDaycare" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
+          <div class="minirow"><label>Harrastukset lapset (€/kk)</label><input id="famHobbies" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
+          <div class="minirow"><label>Ruoka lapsille (€/kk)</label><input id="famFood" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
+          <div class="minirow"><label>Vaipat / tarvikkeet (€/kk)</label><input id="famSupplies" type="number" inputmode="numeric" min="0" step="1" value="0" /></div>
         </div>
 
-        <div id="employedInfo" class="hint" style="display:block;">Työssäkäyvällä käytä ylempiä tulot/kulut-kenttiä. Profiilikohtaisia lisäkenttiä ei tarvita.</div>
+        <div id="employedInfo" class="hint" style="display:block;">Työssäkäyvällä käytä ylempiä kenttiä. Profiilikohtaisia lisäkenttiä ei tarvita.</div>
       </div>
 
-      <div class="card">
+      <!-- Yhteenveto -->
+      <div class="card col-12">
         <h3>Yhteenveto</h3>
         <div class="totals">
           <div class="pill">Tulot (kaikki): <span id="sumIncome">0</span> €</div>
@@ -315,8 +276,9 @@
           <div class="pill">Jäljelle: <span id="leftover">0</span> €</div>
           <div class="pill">Säästö-%: <span id="savePct">0</span>%</div>
         </div>
-        <div style="margin-top:14px;">
-          <button class="btn" id="saveBtn" disabled>Tallenna GitHubiin</button>
+
+        <div class="actions" style="margin-top:10px;">
+          <button class="btn primary" id="saveBtn" disabled>Tallenna GitHubiin</button>
           <button class="btn" id="resetBtn">Tyhjennä</button>
           <button class="btn" id="adminBtn">Avaa Admin</button>
         </div>
@@ -330,12 +292,12 @@
     // ===== SUOMEKSI: Render-backendin pohja-URL =====
     const API_BASE = "https://websitecv-nrv1.onrender.com";
 
-    // ===== SUOMEKSI: Yleiset elementit =====
+    // ===== Yleiset elementit =====
     const profileEl = document.getElementById('profile');
     const presetBtn = document.getElementById('presetBtn');
 
-    const fixedEl = document.getElementById('fixed');
-    const variableEl = document.getElementById('variable');
+    const fixedEl = document.getElementById('fixed') || (function(){ const d=document.createElement('div'); d.id='fixed'; document.querySelectorAll('.card')[2].insertBefore(d, document.getElementById('addFixed')); return d })();
+    const variableEl = document.getElementById('variable') || (function(){ const d=document.createElement('div'); d.id='variable'; document.querySelectorAll('.card')[3].insertBefore(d, document.getElementById('addVariable')); return d })();
     const addFixedBtn = document.getElementById('addFixed');
     const addVariableBtn = document.getElementById('addVariable');
 
@@ -349,7 +311,7 @@
     const adminBtn = document.getElementById('adminBtn');
     const statusEl = document.getElementById('status');
 
-    // ===== SUOMEKSI: Profiilikohtaiset paneelit =====
+    // Profiilikohtaiset paneelit
     const studentIncomes = document.getElementById('studentIncomes');
     const studentCosts = document.getElementById('studentCosts');
     const familyIncomes = document.getElementById('familyIncomes');
@@ -376,22 +338,16 @@
     const famFoodEl = document.getElementById('famFood');
     const famSuppliesEl = document.getElementById('famSupplies');
 
-    // ===== SUOMEKSI: Luo dynaaminen kulurivi =====
+    // Dynaaminen kulurivi
     const makeRow = (name="", value=0, container) => {
       const row = document.createElement('div');
       row.className = 'row';
       const nameI = document.createElement('input');
-      nameI.type = 'text';
-      nameI.placeholder = 'Nimi';
-      nameI.value = name;
+      nameI.type = 'text'; nameI.placeholder = 'Nimi'; nameI.value = name;
       const valI = document.createElement('input');
-      valI.type = 'number';
-      valI.min = "0";
-      valI.step = "1";
-      valI.value = value;
+      valI.type = 'number'; valI.min = "0"; valI.step = "1"; valI.value = value; valI.inputMode="numeric";
       const del = document.createElement('button');
-      del.textContent = '–';
-      del.title = 'Poista';
+      del.textContent = '–'; del.title = 'Poista';
       del.onclick = () => { row.remove(); recalc(); };
       [nameI, valI].forEach(el => el.addEventListener('input', recalc));
       row.append(nameI, valI, del);
@@ -401,11 +357,11 @@
     addFixedBtn.onclick = () => makeRow("", 0, fixedEl);
     addVariableBtn.onclick = () => makeRow("", 0, variableEl);
 
-    // ===== SUOMEKSI: Oletusrivit =====
+    // Oletusrivit
     ["Vuokra","Sähkö","Netti","Puhelin"].forEach(n => makeRow(n, 0, fixedEl));
     ["Ruoka","Liikenne"].forEach(n => makeRow(n, 0, variableEl));
 
-    // ===== SUOMEKSI: Profiilipaneelien näyttö/piilotus =====
+    // Profiilipaneelit näkyviin/piiloon
     function updateProfileUI(){
       const p = profileEl.value;
       studentIncomes.style.display = (p === 'student') ? 'block' : 'none';
@@ -418,7 +374,7 @@
     profileEl.addEventListener('change', updateProfileUI);
     updateProfileUI();
 
-    // ===== SUOMEKSI: Presetit =====
+    // Presetit
     presetBtn.onclick = () => {
       const p = profileEl.value;
       [stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl, stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
@@ -436,7 +392,7 @@
       recalc();
     };
 
-    // ===== SUOMEKSI: Lue dynaamiset rivit =====
+    // Lue rivit
     function readRows(container){
       const rows = [...container.querySelectorAll('.row')];
       return rows.map(r => {
@@ -445,7 +401,7 @@
       });
     }
 
-    // ===== SUOMEKSI: Laskenta =====
+    // Laskenta
     function recalc(){
       const baseIncome = Number(incomeBaseEl.value || 0);
       let profIncome = 0, profCosts = 0;
@@ -479,7 +435,7 @@
       saveBtn.disabled = !(totalIncome > 0 || totalCosts > 0);
     }
 
-    // ===== SUOMEKSI: Eventit =====
+    // Eventit
     [
       incomeBaseEl, stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl,
       stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
@@ -489,7 +445,7 @@
     incomeBaseEl.addEventListener('input', recalc);
     recalc();
 
-    // ===== SUOMEKSI: Reset =====
+    // Reset
     resetBtn.onclick = () => {
       incomeBaseEl.value = 0;
       fixedEl.innerHTML = "";
@@ -507,63 +463,45 @@
       recalc();
     };
 
-    // ===== SUOMEKSI: Tallennus (PHP) =====
+    // Tallennus (PHP)
     saveBtn.onclick = async () => {
       statusEl.textContent = "Tallennetaan…";
       const p = profileEl.value;
 
       const payload = {
-        meta: {
-          type: "budget",
-          profile: p,
-          createdAt: new Date().toISOString(),
-          userAgent: navigator.userAgent
-        },
+        meta: { type:"budget", profile:p, createdAt:new Date().toISOString(), userAgent:navigator.userAgent },
         income: {
           base: Number(incomeBaseEl.value||0),
           student: (p==='student') ? {
-            grant: Number(stuGrantEl.value||0),
-            housing: Number(stuHousingEl.value||0),
-            loanDraw: Number(stuLoanDrawEl.value||0)
+            grant:Number(stuGrantEl.value||0), housing:Number(stuHousingEl.value||0), loanDraw:Number(stuLoanDrawEl.value||0)
           } : null,
           family: (p==='family') ? {
-            childBenefit: Number(famChildBenefitEl.value||0),
-            otherBenefit: Number(famOtherBenefitEl.value||0)
+            childBenefit:Number(famChildBenefitEl.value||0), otherBenefit:Number(famOtherBenefitEl.value||0)
           } : null
         },
         costs: {
           fixed: readRows(fixedEl),
           variable: readRows(variableEl),
           student: (p==='student') ? {
-            fshs: Number(stuFshsEl.value||0),
-            transport: Number(stuTransportEl.value||0),
-            lunchUnit: Number(stuLunchPriceEl.value||0),
-            lunchCount: Number(stuLunchCountEl.value||0),
-            lunchTotal: Number(stuLunchPriceEl.value||0) * Number(stuLunchCountEl.value||0),
-            supplies: Number(stuSuppliesEl.value||0),
-            union: Number(stuUnionEl.value||0)
+            fshs:Number(stuFshsEl.value||0), transport:Number(stuTransportEl.value||0),
+            lunchUnit:Number(stuLunchPriceEl.value||0), lunchCount:Number(stuLunchCountEl.value||0),
+            lunchTotal:Number(stuLunchPriceEl.value||0) * Number(stuLunchCountEl.value||0),
+            supplies:Number(stuSuppliesEl.value||0), union:Number(stuUnionEl.value||0)
           } : null,
           family: (p==='family') ? {
-            childrenCount: Number(famChildrenCountEl.value||0),
-            daycare: Number(famDaycareEl.value||0),
-            hobbies: Number(famHobbiesEl.value||0),
-            food: Number(famFoodEl.value||0),
-            supplies: Number(famSuppliesEl.value||0)
+            childrenCount:Number(famChildrenCountEl.value||0), daycare:Number(famDaycareEl.value||0),
+            hobbies:Number(famHobbiesEl.value||0), food:Number(famFoodEl.value||0), supplies:Number(famSuppliesEl.value||0)
           } : null
         },
         sums: {
-          totalIncome: Number(sumIncomeEl.textContent),
-          totalCosts: Number(sumCostsEl.textContent),
-          leftover: Number(leftoverEl.textContent),
-          savePct: Number(savePctEl.textContent)
+          totalIncome:Number(sumIncomeEl.textContent), totalCosts:Number(sumCostsEl.textContent),
+          leftover:Number(leftoverEl.textContent), savePct:Number(savePctEl.textContent)
         }
       };
 
       try {
         const res = await fetch(`${API_BASE}/save-budget.php`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+          method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(payload)
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data?.error || "Virhe tallennuksessa");
@@ -573,7 +511,7 @@
       }
     };
 
-    // ===== SUOMEKSI: Admin (toistaiseksi aukaisee GitHubin upload-kansion) =====
+    // Admin → avaa GitHub upload-kansion
     adminBtn.onclick = () => {
       const now = new Date();
       const yyyy = now.getFullYear();
