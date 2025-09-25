@@ -5,7 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Budjettilaskuri — DeltaINC</title>
   <style>
-    /* ===== SUOMEKSI: Perustyyli tummaan teemaan ===== */
+    /* ===== LOGO ===== */
+    .logo {
+      display: block;
+      width: max-content;
+      margin: 30px auto;
+      text-align: center;
+      font-size: 64px;
+      font-weight: 700;
+      color: gray17;
+      text-shadow: 3px 3px 8px black;
+      padding: 30px 0;
+      letter-spacing: 4px;
+    }
+
+    /* ===== NAVIGAATIO ===== */
+    .navbar {
+      overflow: visible;
+      background-color: gray17;
+      border-top: 1px solid #666;
+      border-bottom: 1px solid #666;
+      position: sticky;
+      top: 0;
+      z-index: 3000;
+    }
+    .navbar::after { content: ""; display: table; clear: both; }
+
+    .navbar a {
+      float: left;
+      font-size: 16px;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    /* ===== DROPDOWNIT ===== */
+    .dropdown {
+      float: left;
+      overflow: visible;
+      position: relative;
+    }
+    .dropdown .dropbtn {
+      font-size: 16px;    
+      border: none;
+      outline: none;
+      color: white;
+      padding: 14px 16px;
+      background-color: inherit;
+      font-family: inherit;
+      margin: 0;
+      cursor: pointer;
+    }
+    .navbar a:hover, .dropdown:hover .dropbtn { background-color: #666; }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: gray;
+      min-width: 200px;
+      z-index: 4000;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .dropdown-content a {
+      float: none;
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    .dropdown-content a:last-child { border-bottom: none; }
+    .dropdown-content a:hover { background-color: #ddd; }
+    .dropdown:hover .dropdown-content { display: block; }
+
+    /* ===== SISÄLTÖ (budjettilaskuri) ===== */
     body { background:#1f1f1f; color:#eee; font-family:system-ui, Arial; margin:0; }
     .wrap { max-width:1100px; margin:24px auto; padding:16px; }
     h1 { margin:0 0 16px; letter-spacing:1px; }
@@ -33,6 +112,72 @@
   </style>
 </head>
 <body>
+
+  <!-- ===== LOGO ===== -->
+  <div class="logo">DeltaINC</div>
+
+  <!-- ===== NAVIGAATIO ===== -->
+  <div class="navbar">
+    <!-- --- HomePage --- -->
+    <div class="dropdown">
+      <button class="dropbtn">HomePage</button>
+      <div class="dropdown-content">
+        <a href="/OmaWEB.html">HomePage</a>
+      </div>
+    </div>
+
+    <!-- --- Blender --- -->
+    <div class="dropdown">
+      <button class="dropbtn">Blender</button>
+      <div class="dropdown-content">
+        <a href="/blender.html">Projects</a>
+      </div>
+    </div>
+    
+    <!-- --- CV --- -->
+    <div class="dropdown">
+      <button class="dropbtn">CV</button>
+      <div class="dropdown-content">
+        <a href="/cv.html">CV</a>
+      </div>
+    </div>
+
+    <!-- --- Projects --- -->
+    <div class="dropdown">
+      <button class="dropbtn">Projects</button>
+      <div class="dropdown-content">
+        <a href="/pro.html">Gameprojects</a>
+        <a href="https://galaxy-delta.itch.io/" target="_blank" rel="noopener">Itchio-page</a>
+      </div>
+    </div>
+
+    <!-- --- Tools --- -->
+    <div class="dropdown">
+      <button class="dropbtn">Tools</button>
+      <div class="dropdown-content">
+        <a href="/budget.html">Budget Planner</a>
+        <!-- lisää myöhemmin: /request.php, /palkkalaskin.php jne -->
+      </div>
+    </div>
+
+    <!-- --- Social --- -->
+    <div class="dropdown">
+      <button class="dropbtn">Social Media</button>
+      <div class="dropdown-content">
+        <a href="https://www.youtube.com/@PelataanJ/videos" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://www.twitch.tv/galaxy_delta" target="_blank" rel="noopener">Twitch</a>
+      </div>
+    </div>
+
+    <!-- --- Contact --- -->
+    <div class="dropdown">
+      <button class="dropbtn">Contact me</button>
+      <div class="dropdown-content">
+        <a href="mailto:jep.knuutinen@gmail.com">E-mail</a>
+      </div>
+    </div>
+  </div>
+
   <div class="wrap">
     <h1>Budjettilaskuri</h1>
 
@@ -53,11 +198,9 @@
     <div class="grid">
       <div class="card">
         <h3>Tulot</h3>
-        <!-- ===== SUOMEKSI: Yleistulot (palkka tai muu netto/kk) ===== -->
         <label>Työ / muu netto/kk (€)</label>
         <input id="incomeBase" type="number" min="0" step="1" value="0" />
 
-        <!-- ===== SUOMEKSI: Opiskelija -lisätulot ===== -->
         <div id="studentIncomes" style="display:none; margin-top:12px;">
           <hr>
           <h4>Opiskelijan tulot</h4>
@@ -76,7 +219,6 @@
           <div class="hint">Lainan nosto kasvattaa kassavirtaa mutta on velkaa (huomioi erikseen jos haluat).</div>
         </div>
 
-        <!-- ===== SUOMEKSI: Lapsiperhe -lisätulot ===== -->
         <div id="familyIncomes" style="display:none; margin-top:12px;">
           <hr>
           <h4>Lapsiperheen tulot</h4>
@@ -108,7 +250,6 @@
       <div class="card">
         <h3>Profiilikohtaiset kulut</h3>
 
-        <!-- ===== SUOMEKSI: Opiskelijan kulut ===== -->
         <div id="studentCosts" style="display:none;">
           <h4>Opiskelijan kulut</h4>
           <div class="minirow">
@@ -139,7 +280,6 @@
           </div>
         </div>
 
-        <!-- ===== SUOMEKSI: Lapsiperheen kulut ===== -->
         <div id="familyCosts" style="display:none;">
           <h4>Lapsiperheen kulut</h4>
           <div class="minirow">
@@ -164,7 +304,6 @@
           </div>
         </div>
 
-        <!-- ===== SUOMEKSI: Työssäkäyvällä ei ole pakollisia lisäkenttiä, käytä yllä olevia yleiskuluja ===== -->
         <div id="employedInfo" class="hint" style="display:block;">Työssäkäyvällä käytä ylempiä tulot/kulut-kenttiä. Profiilikohtaisia lisäkenttiä ei tarvita.</div>
       </div>
 
@@ -181,14 +320,14 @@
           <button class="btn" id="resetBtn">Tyhjennä</button>
           <button class="btn" id="adminBtn">Avaa Admin</button>
         </div>
-        <div class="hint">“Tallenna GitHubiin” committaa JSON-tiedoston repoosi <code>data/budgets/</code>-kansioon (Render-backend).</div>
+        <div class="hint">Tallennus käyttää <code>/save-budget.php</code> -endpointtia Renderissä (PHP).</div>
         <div id="status" class="hint" style="margin-top:10px;"></div>
       </div>
     </div>
   </div>
 
   <script>
-    // ===== SUOMEKSI: Render-backendin osoite (VAIHDA omaan URL:iin) =====
+    // ===== SUOMEKSI: Render-backendin pohja-URL =====
     const API_BASE = "https://websitecv-nrv1.onrender.com";
 
     // ===== SUOMEKSI: Yleiset elementit =====
@@ -266,7 +405,7 @@
     ["Vuokra","Sähkö","Netti","Puhelin"].forEach(n => makeRow(n, 0, fixedEl));
     ["Ruoka","Liikenne"].forEach(n => makeRow(n, 0, variableEl));
 
-    // ===== SUOMEKSI: Profiilipaneelien näyttö/ piilotus =====
+    // ===== SUOMEKSI: Profiilipaneelien näyttö/piilotus =====
     function updateProfileUI(){
       const p = profileEl.value;
       studentIncomes.style.display = (p === 'student') ? 'block' : 'none';
@@ -279,39 +418,20 @@
     profileEl.addEventListener('change', updateProfileUI);
     updateProfileUI();
 
-    // ===== SUOMEKSI: Profiilikohtaiset presettien arviot (voit säätää paikallisiin realiteetteihin) =====
+    // ===== SUOMEKSI: Presetit =====
     presetBtn.onclick = () => {
       const p = profileEl.value;
-
-      // Nollaa profiilikohtaiset kentät
       [stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl, stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
        famChildBenefitEl, famOtherBenefitEl, famChildrenCountEl, famDaycareEl, famHobbiesEl, famFoodEl, famSuppliesEl]
        .forEach(el => el && (el.value = 0));
 
       if (p === 'student') {
-        // Tulot
-        stuGrantEl.value = 300;
-        stuHousingEl.value = 350;
-        stuLoanDrawEl.value = 250;
-        // Kulut
-        stuFshsEl.value = 10;
-        stuTransportEl.value = 35;
-        stuLunchPriceEl.value = 2.95;
-        stuLunchCountEl.value = 20;
-        stuSuppliesEl.value = 20;
-        stuUnionEl.value = 5;
+        stuGrantEl.value = 300; stuHousingEl.value = 350; stuLoanDrawEl.value = 250;
+        stuFshsEl.value = 10;  stuTransportEl.value = 35; stuLunchPriceEl.value = 2.95; stuLunchCountEl.value = 20;
+        stuSuppliesEl.value = 20; stuUnionEl.value = 5;
       } else if (p === 'family') {
-        // Tulot
-        famChildBenefitEl.value = 300; // esimerkki yhteissumma
-        famOtherBenefitEl.value = 0;
-        famChildrenCountEl.value = 2;
-        // Kulut
-        famDaycareEl.value = 200;
-        famHobbiesEl.value = 80;
-        famFoodEl.value = 300;
-        famSuppliesEl.value = 40;
-      } else if (p === 'employed') {
-        // Työssäkäyvälle ei erillisiä lisätuloja/kuluja oletuksena
+        famChildBenefitEl.value = 300; famOtherBenefitEl.value = 0; famChildrenCountEl.value = 2;
+        famDaycareEl.value = 200; famHobbiesEl.value = 80; famFoodEl.value = 300; famSuppliesEl.value = 40;
       }
       recalc();
     };
@@ -325,37 +445,21 @@
       });
     }
 
-    // ===== SUOMEKSI: Laske kokonaistulot/kulut profiilin mukaan =====
+    // ===== SUOMEKSI: Laskenta =====
     function recalc(){
       const baseIncome = Number(incomeBaseEl.value || 0);
-      let profIncome = 0;
-      let profCosts = 0;
-
+      let profIncome = 0, profCosts = 0;
       const p = profileEl.value;
+
       if (p === 'student') {
-        const g = Number(stuGrantEl.value || 0);
-        const h = Number(stuHousingEl.value || 0);
-        const l = Number(stuLoanDrawEl.value || 0);
-        profIncome += g + h + l;
-
-        const fshs = Number(stuFshsEl.value || 0);
-        const trn  = Number(stuTransportEl.value || 0);
-        const lpr  = Number(stuLunchPriceEl.value || 0);
-        const lct  = Number(stuLunchCountEl.value || 0);
-        const sup  = Number(stuSuppliesEl.value || 0);
-        const uni  = Number(stuUnionEl.value || 0);
-        profCosts += fshs + trn + (lpr * lct) + sup + uni;
-
+        profIncome += Number(stuGrantEl.value||0) + Number(stuHousingEl.value||0) + Number(stuLoanDrawEl.value||0);
+        profCosts += Number(stuFshsEl.value||0) + Number(stuTransportEl.value||0)
+                    + Number(stuLunchPriceEl.value||0) * Number(stuLunchCountEl.value||0)
+                    + Number(stuSuppliesEl.value||0) + Number(stuUnionEl.value||0);
       } else if (p === 'family') {
-        const cb  = Number(famChildBenefitEl.value || 0);
-        const oth = Number(famOtherBenefitEl.value || 0);
-        profIncome += cb + oth;
-
-        const dc  = Number(famDaycareEl.value || 0);
-        const hob = Number(famHobbiesEl.value || 0);
-        const food= Number(famFoodEl.value || 0);
-        const sup = Number(famSuppliesEl.value || 0);
-        profCosts += dc + hob + food + sup;
+        profIncome += Number(famChildBenefitEl.value||0) + Number(famOtherBenefitEl.value||0);
+        profCosts += Number(famDaycareEl.value||0) + Number(famHobbiesEl.value||0)
+                    + Number(famFoodEl.value||0) + Number(famSuppliesEl.value||0);
       }
 
       const fixed = readRows(fixedEl);
@@ -368,14 +472,14 @@
       const pct = totalIncome > 0 ? Math.round((left / totalIncome) * 100) : 0;
 
       sumIncomeEl.textContent = Math.round(totalIncome).toString();
-      sumCostsEl.textContent = Math.round(totalCosts).toString();
-      leftoverEl.textContent = Math.round(left).toString();
-      savePctEl.textContent = pct.toString();
+      sumCostsEl.textContent  = Math.round(totalCosts).toString();
+      leftoverEl.textContent  = Math.round(left).toString();
+      savePctEl.textContent   = pct.toString();
 
       saveBtn.disabled = !(totalIncome > 0 || totalCosts > 0);
     }
 
-    // ===== SUOMEKSI: Event-kytkennät =====
+    // ===== SUOMEKSI: Eventit =====
     [
       incomeBaseEl, stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl,
       stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
@@ -385,7 +489,7 @@
     incomeBaseEl.addEventListener('input', recalc);
     recalc();
 
-    // ===== SUOMEKSI: Resetoi kaiken nopsaan =====
+    // ===== SUOMEKSI: Reset =====
     resetBtn.onclick = () => {
       incomeBaseEl.value = 0;
       fixedEl.innerHTML = "";
@@ -393,7 +497,6 @@
       ["Vuokra","Sähkö","Netti","Puhelin"].forEach(n => makeRow(n, 0, fixedEl));
       ["Ruoka","Liikenne"].forEach(n => makeRow(n, 0, variableEl));
 
-      // tyhjennä profiilikentät
       [stuGrantEl, stuHousingEl, stuLoanDrawEl, stuFshsEl, stuTransportEl, stuLunchPriceEl, stuLunchCountEl, stuSuppliesEl, stuUnionEl,
        famChildBenefitEl, famOtherBenefitEl, famChildrenCountEl, famDaycareEl, famHobbiesEl, famFoodEl, famSuppliesEl]
        .forEach(el => el && (el.value = 0));
@@ -404,9 +507,9 @@
       recalc();
     };
 
-    // ===== SUOMEKSI: Tallennus Renderin APIin (-> commit GitHubiin) =====
+    // ===== SUOMEKSI: Tallennus (PHP) =====
     saveBtn.onclick = async () => {
-      statusEl.textContent = "Tallennetaan… (ensimmäinen pyyntö voi herättää palvelimen)";
+      statusEl.textContent = "Tallennetaan…";
       const p = profileEl.value;
 
       const payload = {
@@ -457,24 +560,29 @@
       };
 
       try {
-        const res = await fetch(`${API_BASE}/api/save-budget`, {
+        const res = await fetch(`${API_BASE}/save-budget.php`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data?.error || "Virhe tallennuksessa");
-        statusEl.textContent = `✅ Tallennettu: ${data.path} (${data.commitSha.slice(0,7)})`;
+        statusEl.textContent = `✅ Tallennettu: ${data.path} (${(data.commitSha||'').slice(0,7)})`;
       } catch (e) {
         statusEl.textContent = `❌ Virhe: ${e.message}`;
       }
     };
 
-    // ===== SUOMEKSI: Admin-listaus endpointtiin (nopea tapa) =====
+    // ===== SUOMEKSI: Admin (toistaiseksi aukaisee GitHubin upload-kansion) =====
     adminBtn.onclick = () => {
-      const y = new Date().getFullYear();
-      const m = String(new Date().getMonth() + 1).padStart(2, "0");
-      window.open(`${API_BASE}/api/list-budgets?year=${y}&month=${m}`, "_blank");
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth()+1).padStart(2,'0');
+      const owner = "galaxy-delta";   // muuta omaan
+      const repo  = "WebSiteCV";      // muuta omaan
+      const branch= "main";           // muuta omaan
+      const url = `https://github.com/${owner}/${repo}/upload/${branch}/data/budgets/${yyyy}/${mm}`;
+      window.open(url, "_blank");
     };
   </script>
 </body>
