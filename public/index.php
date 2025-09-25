@@ -132,7 +132,7 @@ $now = new DateTime('now', new DateTimeZone('Europe/Helsinki'));
 <body>
   <main class="frame" role="main" aria-labelledby="app-title">
     <h1 id="app-title" class="logo">DeltaINC</h1>
-    <p class="sub">Metallinkiilto • Apple-henkinen demo • PHP toimii ✅</p>
+    <p class="sub">Let's build the future together • This is my CV• PHP works! ✅</p>
 
     <div class="row" aria-label="palvelimen aika">
       <div class="chip">Server time: <strong><?= htmlspecialchars($now->format('H:i:s')) ?></strong></div>
@@ -141,7 +141,7 @@ $now = new DateTime('now', new DateTimeZone('Europe/Helsinki'));
     </div>
 
     <div class="actions">
-      <a class="btn" href="/OmaWEB.html" aria-label="Siirry etusivulle">← Etusivulle</a>
+      <a class="btn" href="/OmaWEB.html" aria-label="Siirry etusivulle">← FrontPage</a>
     </div>
   </main>
 </body>
