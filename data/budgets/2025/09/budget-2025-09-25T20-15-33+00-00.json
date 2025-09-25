@@ -1,0 +1,51 @@
+{
+    "meta": {
+        "type": "budget",
+        "profile": "employed",
+        "createdAt": "2025-09-25T20:15:33.795Z",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 OPR/121.0.0.0"
+    },
+    "income": {
+        "base": 4555,
+        "student": null,
+        "family": null
+    },
+    "costs": {
+        "fixed": [
+            {
+                "name": "Rent",
+                "value": 4555
+            },
+            {
+                "name": "Electricity",
+                "value": 455
+            },
+            {
+                "name": "Internet",
+                "value": 45
+            },
+            {
+                "name": "Phone",
+                "value": 4
+            }
+        ],
+        "variable": [
+            {
+                "name": "Groceries",
+                "value": 0
+            },
+            {
+                "name": "Transportation",
+                "value": 0
+            }
+        ],
+        "student": null,
+        "family": null
+    },
+    "sums": {
+        "totalIncome": 4555,
+        "totalCosts": 5059,
+        "leftover": -504,
+        "savePct": -11
+    }
+}
