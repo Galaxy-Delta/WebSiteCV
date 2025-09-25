@@ -8,7 +8,7 @@ $now = new DateTime('now', new DateTimeZone('Europe/Helsinki'));
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DeltaINC — demo</title>
+  <title>DeltaINC</title>
   <meta name="color-scheme" content="dark light">
   <style>
     :root{
