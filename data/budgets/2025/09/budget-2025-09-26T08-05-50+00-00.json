@@ -1,0 +1,67 @@
+{
+    "meta": {
+        "type": "budget",
+        "profile": "student",
+        "createdAt": "2025-09-26T08:06:04.413Z",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    "income": {
+        "base": 2500,
+        "student": {
+            "grant": 0,
+            "housing": 0,
+            "loanDraw": 0
+        },
+        "family": null
+    },
+    "costs": {
+        "fixed": [
+            {
+                "name": "Rent",
+                "value": 450
+            },
+            {
+                "name": "Electricity",
+                "value": 60
+            },
+            {
+                "name": "Internet",
+                "value": 43
+            },
+            {
+                "name": "Phone",
+                "value": 23
+            },
+            {
+                "name": "netflix",
+                "value": 0
+            }
+        ],
+        "variable": [
+            {
+                "name": "Groceries",
+                "value": 500
+            },
+            {
+                "name": "Transportation",
+                "value": 100
+            }
+        ],
+        "student": {
+            "fshs": 20,
+            "transport": 0,
+            "lunchUnit": 0,
+            "lunchCount": 0,
+            "lunchTotal": 0,
+            "supplies": 0,
+            "union": 0
+        },
+        "family": null
+    },
+    "sums": {
+        "totalIncome": 2500,
+        "totalCosts": 1196,
+        "leftover": 1304,
+        "savePct": 52
+    }
+}
