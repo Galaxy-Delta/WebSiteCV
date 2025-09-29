@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <title>DeltaINC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Plausible (domain vain) -->
+  <script defer data-domain="galaxy-delta.github.io" src="https://plausible.io/js/script.js"></script>
+
+  <style>
+    /* ===== DESIGN TOKENS ===== */
+    :root{
+      --card-bg-1:#2a2a2a;
+      --card-bg-2:#222;
+      --card-brd:rgba(255,255,255,.08);
+      --card-brd-hover:rgba(255,255,255,.16);
+      --card-shadow:0 10px 28px rgba(0,0,0,.35);
+      --card-shadow-hover:0 20px 50px rgba(0,0,0,.5);
+      --radius:16px;
+      --radius-sm:12px;
+      --t:180ms cubic-bezier(.22,.61,.36,1);
+    }
+    @media (prefers-reduced-motion: reduce){
+      :root { --t:0ms; }
+      * { animation:none !important; transition:none !important; }
+    }
+
+    /* ===== BODY & TAUSTA ===== */
+    body {
+      background-color: #2c2c2c; 
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #eee;
+    }
+
+    /* ===== LOGO ===== */
+    .logo {
+      display: block;
+      width: max-content;
+      margin: 30px auto;
+      text-align: center;
+      font-size: 64px;
+      font-weight: 700;
+      color: silver;              
+      text-shadow: 3px 3px 8px black;
+      padding: 30px 0;
+      letter-spacing: 4px;
+    }
+
+    /* ===== NAVIGAATIO ===== */
+    .navbar {
+      overflow: visible;
+      background-color: #2b2b2b;  
+      border-top: 1px solid #666;
+      border-bottom: 1px solid #666;
+      position: sticky;
+      top: 0;
+      z-index: 3000;
+    }
+    .navbar::after { content: ""; display: table; clear: both; }
+
+    .navbar a {
+      float: left;
+      font-size: 16px;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    /* ===== DROPDOWNIT ===== */
+    .dropdown { float: left; overflow: visible; position: relative; }
+    .dropdown .dropbtn {
+      font-size: 16px;    
+      border: none;
+      outline: none;
+      color: white;
+      padding: 14px 16px;
+      background-color: inherit;
+      font-family: inherit;
+      margin: 0;
+      cursor: pointer;
+    }
+    .navbar a:hover, .dropdown:hover .dropbtn { background-color: #666; }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #3a3a3a; 
+      min-width: 200px;
+      z-index: 4000;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .dropdown-content a {
+      float: none;
+      color: #fff;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      text-align: left;
+      border-bottom: 1px solid #555;
+    }
+    .dropdown-content a:last-child { border-bottom: none; }
+    .dropdown-content a:hover { background-color: #555; }
+    .dropdown:hover .dropdown-content { display: block; }
+    /* mobiili: tap-to-open */
+    .dropdown:focus-within .dropdown-content { display:block; }
+    .dropdown.open .dropdown-content { display:block; }
+
+    /* ===== SISÄLTÖ ===== */
+    .section {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 16px 40px;
+    }
+    .section-title {
+      margin: 24px 0 16px;
+      font-size: 28px;
+      color: #ddd; /* korjattu */
+      text-shadow: 1px 1px 3px rgba(0,0,0,.6);
+      position: relative;
+    }
+    .section-title:after {
+      content: "";
+      display: block;
+      height: 2px;
+      background: linear-gradient(90deg, silver, transparent);
+      margin-top: 8px;
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 900px) { .social-grid { grid-template-columns: 1fr 1fr; } }
+
+    .card {
+      background: #3a3a3a;
+      border: 1px solid #555;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,.25);
+      position: relative;
+      z-index: 0;
+    }
+    .card h3 {
+      margin: 6px 0 12px;
+      color: #fff;
+      font-size: 18px;
+      letter-spacing: .5px;
+    }
+
+    .ratio { position: relative; width: 100%; padding-top: 56.25%; border-radius: 8px; overflow: hidden; background: #222; }
+    .ratio iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+
+    .hint { font-size: 13px; color: #ccc; margin-top: 8px; }
+
+    /* ===== BLENDER GALLERIA ===== */
+    .gallery-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+      padding: 10px 16px 28px;
+    }
+    @media (min-width: 640px){ .gallery-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px){ .gallery-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+    .figure{
+      background: linear-gradient(180deg,var(--card-bg-1),var(--card-bg-2));
+      border: 1px solid var(--card-brd);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: transform var(--t), box-shadow var(--t), border-color var(--t), background var(--t);
+      will-change: transform;
+    }
+    .figure:hover{
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow-hover);
+      border-color: var(--card-brd-hover);
+    }
+
+    .figure .thumb{
+      position: relative;
+      aspect-ratio: 16/9;
+      background:#141414;
+      overflow: hidden;
+      display:block;
+    }
+    .figure img{
+      width:100%; height:100%; object-fit:cover; display:block;
+      transform: scale(1.02);
+      transition: transform 220ms ease;
+    }
+    .figure:hover img{ transform: scale(1.06); }
+
+    .figure .thumb::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.0) 60%, rgba(0,0,0,.08));
+      pointer-events:none;
+    }
+
+    .figure .meta{ padding: 14px 16px 16px; }
+    .figure h4{
+      margin:0 0 6px; font-size:17px; letter-spacing:.2px; color:#fff; font-weight:700;
+    }
+    .figure p{
+      margin:0; font-size:14px; line-height:1.45; color:#cfcfcf;
+    }
+
+    /* ===== LIGHTBOX ===== */
+    .lightbox {
+      position: fixed; inset: 0;
+      background: radial-gradient(800px 600px at 50% 0%, rgba(0,0,0,.75), rgba(0,0,0,.92));
+      display: none; align-items: center; justify-content: center;
+      padding: 24px; z-index: 9999;
+    }
+    .lightbox img { 
+      max-width: min(92vw, 1600px); max-height: 86vh; display: block;
+      border-radius: 14px; border: 1px solid var(--card-brd-hover);
+      box-shadow: 0 30px 60px rgba(0,0,0,.55);
+    }
+    .lightbox:target { display: flex; }
+    .lightbox a.close {
+      position: fixed; top: 16px; right: 16px;
+      font-size: 28px; line-height: 1; text-decoration: none; color: #fff;
+      padding: 6px 10px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); border-radius: 8px;
+    }
+    html:has(.lightbox:target){ overflow:hidden; } 
+
+    /* ===== ACCESSIBILITY FOCUS ===== */
+    .figure a:focus-visible{
+      outline: 2px solid rgba(110,231,255,.7);
+      outline-offset: 2px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== LOGO ===== -->
+  <div class="logo">DeltaINC</div>
+
+  <!-- ===== NAVIGAATIO ALKU ===== -->
+  <div class="navbar">
+    <!-- --- HomePage --- -->
+     <div class="dropdown">
+      <button class="dropbtn">HomePage</button>
+      <div class="dropdown-content">
+        <a href="OmaWEB.html">HomePage</a>
+      </div>
+    </div>
+
+   <!-- --- Blender --- -->
+    <div class="dropdown">
+      <button class="dropbtn">Blender</button>
+      <div class="dropdown-content">
+       <a href="INDEX2.html">Projects</a>
+      </div>
+    </div>
+    
+    <!-- --- CV --- -->
+    <div class="dropdown">
+      <button class="dropbtn">CV</button>
+      <div class="dropdown-content">
+        <a href="index.html">CV</a>
+      </div>
+    </div>
+
+    <!-- --- Projects --- -->
+    <div class="dropdown">
+      <button class="dropbtn">Projects</button>
+      <div class="dropdown-content">
+        <a href="Index3.html">Gameprojects</a>
+        <a href="https://galaxy-delta.itch.io/" target="_blank" rel="noopener">Itchio-page</a>
+      </div>
+    </div>
+
+    <!-- --- Somet --- -->
+    <div class="dropdown">
+      <button class="dropbtn">Social Media</button>
+      <div class="dropdown-content">
+        <a href="https://www.youtube.com/@PelataanJ/videos" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://www.twitch.tv/galaxy_delta" target="_blank" rel="noopener">Twitch</a>
+      </div>
+    </div>
+
+    <!-- --- Yhteystiedot --- -->
+    <div class="dropdown">
+      <button class="dropbtn">Contact me</button>
+      <div class="dropdown-content">
+        <a href="mailto:jep.knuutinen@gmail.com">E-mail</a>
+      </div>
+    </div>
+  </div>
+  <!-- ===== NAVIGAATIO LOPPU ===== -->
+
+  <div class="gallery-grid">
+    <!-- 1: TÖLKKI -->
+
+    <figure class="figure">
+  <a class="thumb" href="#img01">
+    <img
+      src="./Pictures/can.png"
+      alt="lonkku"
+      loading="lazy" decoding="async">
+  </a>
+  <figcaption class="meta">
+    <h4>Long Drink Can</h4>
+    <p>I made this for my meme LongDrink game i think it came out pretty good. I didnt want to include any logos for the can because of copyright issues. This can was a parody.</p>
+  </figcaption>
+</figure>
+
+<!-- 2: JAMGUY -->
+<figure class="figure">
+  <a class="thumb" href="#img02">
+    <img
+      src="./Pictures/jamguy.png"
+      alt="JamGuy-hahmo game jamia varten"
+      loading="lazy" decoding="async">
+  </a>
+  <figcaption class="meta">
+    <h4>JamGuy — Finnish College Game Jam</h4>
+    <p>Made for Finnish College Game Jam #8 This is the npc that chases the player during the game.</p>
+  </figcaption>
+</figure>
+
+<!-- 3: LANKAKONE -->
+<figure class="figure">
+  <a class="thumb" href="#img03">
+    <img
+      src="./Pictures/lankakone.png"
+      alt="Fabric machine made for Kauhava Knife & Textile Museum"
+      loading="lazy" decoding="async">
+  </a>
+  <figcaption class="meta">
+    <h4>Lankakone — Kauhava museum</h4>
+    <p>Made for Kauhava Knife and Textile museum knife trhowing game you can see this asset with diffrent textures in the Trailer.</p>
+  </figcaption>
+</figure>
+
+<!-- 4: POWER SUPPLY -->
+<figure class="figure">
+  <a class="thumb" href="#img04">
+    <img
+      src="./Pictures/powersupply.png"
+      srcset="
+        ./Pictures/powersupply.png 720w,
+        ./Pictures/powersupply.png 1280w
+      "
+      sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+      alt="Power supply -prop"
+      loading="lazy" decoding="async">
+  </a>
+  <figcaption class="meta">
+    <h4>Power Supply — prop</h4>
+    <p>My Power Supply i made and this was my first attempt</p>
+  </figcaption>
+</figure>
+
+<!-- 5: RELKKU -->
+<figure class="figure">
+  <a class="thumb" href="#img05">
+    <img
+      src="./Pictures/relkku.png"
+      srcset="
+        ./Pictures/relkku.png 720w,
+        ./Pictures/relkku.png 1280w
+      "
+      sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+      alt="relkku (relkku)"
+      loading="lazy" decoding="async">
+  </a>
+  <figcaption class="meta">
+    <h4>Revolver</h4>
+    <p>Wanted to make a Revolver and ammo for it and this is the result</p>
+  </figcaption>
+</figure>
+
+<!-- 6: RIFLE -->
+<figure class="figure">
+  <a class="thumb" href="#img06">
+    <img
+      src="./Pictures/rifle_720.png"
+      srcset="
+        ./Pictures/rifle.png 720w,
+        ./Pictures/rifle.png 1280w
+      "
+      sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+      alt="Rifle-prop"
+      loading="lazy" decoding="async">
+  </a>
+  <figcaption class="meta">
+    <h4>Rifle</h4>
+    <p>Wanted to make a huntting rifle not the best but i could make use of shaders to make the metal look more old.</p>
+  </figcaption>
+</figure>
+
+<!-- 7: RTX PARODY -->
+<figure class="figure">
+  <a class="thumb" href="#img07">
+    <img
+      src="./Pictures/rtxblend.png"
+      srcset="
+        ./Pictures/rtxblend.png 720w,
+        ./Pictures/rtxblend.png 1280w
+      "
+      sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+      alt="Parodia-näytönohjain"
+      loading="lazy" decoding="async">
+  </a>
+  <figcaption class="meta">
+    <h4>RTX</h4>
+    <p>Wanted to make a gbu and see how difficult was it to make and this was result. My reference was Nvidias RTX 4080 TI.</p>
+  </figcaption>
+</figure>
+
+<!-- 8: SETUP -->
+<figure class="figure">
+  <a class="thumb" href="#img08">
+    <img
+      src="./Pictures/setup.png"
+      srcset="
+        ./Pictures/setup.png 720w,
+        ./Pictures/setup.png 1280w
+      "
+      sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+      alt="Oma setup"
+      loading="lazy" decoding="async">
+  </a>
+  <figcaption class="meta">
+    <h4>Setup</h4>
+    <p>My rooms setup this is a work in progress i still have rest of my room to 3D model.</p>
+  </figcaption>
+</figure>
+
+<!--Did you know that god of death loves apples-->
+ <!-- LIGHTBOXIT -->
+<div id="img01" class="lightbox">
+  <a class="close" href="#">✕</a>
+  <img src="./Pictures/can.png" alt="Long Drink can — enlarge">
+</div>
+<div id="img02" class="lightbox">
+  <a class="close" href="#">✕</a>
+  <img src="./Pictures/jamguy.png" alt="JamGuy — enlarge">
+</div>
+<div id="img03" class="lightbox">
+  <a class="close" href="#">✕</a>
+  <img src="./Pictures/lankakone.png" alt="Lankakone — enlarge">
+</div>
+<div id="img04" class="lightbox">
+  <a class="close" href="#">✕</a>
+  <img src="./Pictures/powersupply.png" alt="Power Supply — enlarge">
+</div>
+<div id="img05" class="lightbox">
+  <a class="close" href="#">✕</a>
+  <img src="./Pictures/relkku.png" alt="Relkku — enlarge">
+</div>
+<div id="img06" class="lightbox">
+  <a class="close" href="#">✕</a>
+  <img src="./Pictures/rifle.png" alt="Rifle — enlarge">
+</div>
+<div id="img07" class="lightbox">
+  <a class="close" href="#">✕</a>
+  <img src="./Pictures/rtxblend.png" alt="rtxblend — enlarge">
+</div>
+<div id="img08" class="lightbox">
+  <a class="close" href="#">✕</a>
+  <img src="./Pictures/setup.png" alt="Setup — enlarge">
+</div>
+
+  <!-- Mobiili: tap-to-open dropdown -->
+  <script>
+    document.querySelectorAll('.dropdown .dropbtn').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        e.preventDefault();
+        const dd = btn.closest('.dropdown');
+        document.querySelectorAll('.dropdown.open').forEach(x=>{ if(x!==dd) x.classList.remove('open'); });
+        dd.classList.toggle('open');
+      });
+    });
+    document.addEventListener('click', e=>{
+      document.querySelectorAll('.dropdown.open').forEach(dd=>{
+        if(!dd.contains(e.target)) dd.classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
