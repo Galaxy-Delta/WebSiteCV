@@ -230,7 +230,7 @@
       $('#out').classList.remove('hidden');
     }
 
-    // ===== Create PDF and return Base64 (no data: prefix)
+    // ===== Create PDF and return Base64 
     async function makePdf(m){
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ unit: 'pt', format: 'a4' });
@@ -262,7 +262,7 @@
       const fname = `Payroll_${(m.period || 'period')}_${Date.now()}.pdf`;
       doc.save(fname);
 
-      // Base64 without the "data:application/pdf;base64," prefix
+      // Base64 without the "data:application/pdf;base64
       const dataUri = doc.output('datauristring');
       const base64 = dataUri.split(',')[1] || '';
       return base64;
@@ -324,6 +324,29 @@
         btn.disabled = false;
       }
     });
+     // Tallenna → näytä summary ja ainoa PDF-nappi
+    saveBtn.onclick = async () => {
+      statusEl.textContent = "Saving…";
+      saveBtn.disabled = true;
+      const payload = buildPayload();
+      try {
+        const res = await fetch(`${API_BASE}/save-budget.php`, {
+          method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.error || "Save failed");
+        statusEl.textContent = "✅ Saved successfully. You can proceed.";
+        renderSummary(payload);
+        downloadAfterSaveBtn.onclick = () => generatePDF(payload);
+      } catch (e) {
+        statusEl.textContent = `❌ Error: ${e.message}`;
+      } finally {
+        saveBtn.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>
 
     // Prevent default form submit (we handle via buttons)
     $('#payForm').addEventListener('submit', (e)=> e.preventDefault());
