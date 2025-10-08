@@ -1,4 +1,4 @@
-DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -92,7 +92,7 @@ DOCTYPE html>
     <!-- ===== TITLE ===== -->
     <h1>DeltaINC — Payroll Calculator</h1>
 
-    <!-- ===== ASKEL 1: FORM ===== -->
+    <!-- ===== STEP 1: FORM ===== -->
     <form id="payForm" class="card">
       <div class="grid">
         <div><label for="hourly">Hourly Wages (€ / h)</label><input id="hourly" type="number" step="0.01" value="13.50" required></div>
@@ -114,32 +114,48 @@ DOCTYPE html>
       <div id="status"></div>
     </form>
 
-    <!-- ===== ASKEL 2: portti (jatkuu) ===== -->
+    <!-- ===== STEP 2: GATE ===== -->
     <div id="gate" class="card hidden">
-      <h2> SAVED✅</h2>
-      <p>Data was saved to<code>data/palkka/...<code>. Click<strong>Continue</strong>to view the final summary.</p>
-        <button id="continueBtn"
-        class="primary">Continue</button>
+      <h2>Saved ✅</h2>
+      <p>
+        Data was saved to <code>data/palkka/…</code>. Click <strong>Continue</strong> to proceed.
+      </p>
+      <button id="continueBtn" class="primary">Continue</button>
+      <div id="gateStatus" class="subtle"></div>
     </div>
 
-    <!--===ASKEL 3: VAIN ARVO NÄKYY====-->
+    <!-- ===== STEP 3A: POST-ACTIONS (no results yet) ===== -->
+    <div id="post" class="card hidden">
+      <h2>Next steps</h2>
+      <p>Choose what you want to do next.</p>
+      <div class="btns">
+        <button id="showResultsBtn" class="primary">SHOW RESULTS</button>
+        <button id="downloadPdfBtn">DOWNLOAD PDF</button>
+      </div>
+      <div id="postStatus" class="subtle"></div>
+    </div>
+
+    <!-- ===== STEP 3B: RESULTS (shown only after SHOW RESULTS) ===== -->
     <div id="out" class="card hidden">
       <h2>Results</h2>
-      <table id="resultTable"><thead><tr><th>Row</th>
-        <th>Value</th></tr></thead><tbody></tbody></table>
-        <div class="btns"><button id="downloadPdfBtn"
-          class="primary">Download PDF</button></div>
+      <table id="resultTable">
+        <thead><tr><th>Row</th><th>Value</th></tr></thead>
+        <tbody></tbody>
+      </table>
     </div>
-    </div>
-    <script>
-      //====BACKEND====
-      const BACKEND_URL ="https://websitecv-nrv1.onrender.com/save-payroll.php"
-       // existing: saves to data/palkka + returns path
-    const BACKEND_GH_URL = "https://websitecv-nrv1.onrender.com/save-github.php";  // Hiljainen github commit
+  </div>
 
-    // ===== Helpers
+  <script>
+    //==== BACKENDS ====
+    const BACKEND_URL = "https://websitecv-nrv1.onrender.com/save-payroll.php"; // saves to data/palkka + returns path
+    const BACKEND_GH_URL = "https://websitecv-nrv1.onrender.com/save-github.php"; // silent GitHub commit
+
+    // ===== Helpers =====
     const $ = (s) => document.querySelector(s);
     const statusEl = document.getElementById('status');
+    const gateStatus = document.getElementById('gateStatus');
+    const postStatus = document.getElementById('postStatus');
+
     function readNum(id){ return Number(document.getElementById(id).value || 0); }
     function readStr(id){ return String(document.getElementById(id).value || ''); }
 
@@ -191,13 +207,11 @@ DOCTYPE html>
 
     // ===== PDF generation =====
     function stylePayrollPDF(doc, m){
-      // === MUOKATA PDF JOS TARVII ===
       doc.setFontSize(18);
       doc.text('Payroll Summary — DeltaINC', 40, 40);
       doc.setFontSize(10);
       doc.text(`Period: ${m.period || '—'}`, 40, 58);
       doc.text(`Generated: ${new Date().toLocaleString()}`, 40, 72);
-      // TODO: lisää logo
     }
 
     async function buildPdfAndReturnBase64(m){
@@ -225,16 +239,17 @@ DOCTYPE html>
       };
     }
 
-    // ===== UI wiring
+    // ===== UI wiring =====
     const calcBtn = document.getElementById('calcBtn');
     const resetBtn = document.getElementById('resetBtn');
     const saveBtn = document.getElementById('saveBtn');
     const continueBtn = document.getElementById('continueBtn');
     const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    const showResultsBtn = document.getElementById('showResultsBtn');
 
     let lastPdfName = null;
     let lastPdfBase64 = null;
-    let lastModel = null; // pidetään malli myös Continue-vaihetta varten
+    let lastModel = null; // used after Continue
 
     calcBtn.onclick = () => {
       const m = compute();
@@ -246,14 +261,17 @@ DOCTYPE html>
     resetBtn.onclick = () => {
       document.getElementById('out').classList.add('hidden');
       document.getElementById('gate').classList.add('hidden');
+      document.getElementById('post').classList.add('hidden');
       document.getElementById('payForm').classList.remove('hidden');
       statusEl.textContent = '';
+      gateStatus.textContent = '';
+      postStatus.textContent = '';
       lastPdfBase64 = null;
       lastPdfName = null;
       lastModel = null;
     };
 
-    // === SAVE & PROCEED (eka askel): save to backend (data/palkka/...), then show gate
+    // === SAVE & PROCEED (Step 1): save to backend (data/palkka/...), then show gate ===
     saveBtn.onclick = async () => {
       try{
         saveBtn.disabled = true;
@@ -280,7 +298,6 @@ DOCTYPE html>
         if(!res.ok) throw new Error(data?.error || `Save failed (${res.status})`);
 
         statusEl.textContent = `Saved to: ${data?.saved_dir || 'data/palkka/...'} \u2714\uFE0F`;
-        // Näytä gate (Continue). Ei vielä lopputuloksia.
         document.getElementById('gate').classList.remove('hidden');
       }catch(e){
         console.error(e);
@@ -290,49 +307,50 @@ DOCTYPE html>
       }
     };
 
-    // === SILENT GITHUB SAVE (on Continue) ===
+    // === SILENT GITHUB SAVE (await + status) ===
     async function silentGithubSave(){
-      
-      if(!lastModel){
-        lastModel = compute();
-      }
-      if(!lastPdfBase64){
-        const pdf = await buildPdfAndReturnBase64(lastModel);
-        lastPdfName = pdf.filename;
-        lastPdfBase64 = pdf.base64;
-      }
-      const ghPayload = {
-        // backend hoitaa pääsee vähällä 
-        model: lastModel,
-        pdf_base64: lastPdfBase64,
-        pdf_filename: lastPdfName
-      };
       try{
-        await fetch(BACKEND_GH_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(ghPayload)
+        if(!lastModel){ lastModel = compute(); }
+        if(!lastPdfBase64){
+          const pdf = await buildPdfAndReturnBase64(lastModel);
+          lastPdfName = pdf.filename;
+          lastPdfBase64 = pdf.base64;
+        }
+        const ghPayload = {
+          model: lastModel,
+          pdf_base64: lastPdfBase64,
+          pdf_filename: lastPdfName
+        };
+        gateStatus.textContent = 'Committing to GitHub (DATA folder)…';
+        const r = await fetch(BACKEND_GH_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ghPayload)
         });
-       
+        if(!r.ok){ throw new Error(`GitHub save failed (${r.status})`); }
+        gateStatus.textContent = 'Saved to GitHub ✅';
       }catch(err){
-        // tarkoituksella hiljaa — logiin saa jäädä
-        console.debug('Silent GitHub save failed (ignored in UI):', err);
+        console.debug('Silent GitHub save failed:', err);
+        gateStatus.textContent = 'GitHub save failed (continuing anyway).';
       }
     }
 
-    // === CONTINUE: do silent GitHub save, then reveal results-only view
+    // === CONTINUE: do GitHub save, then show the "Next steps" screen with two buttons ===
     continueBtn.onclick = async () => {
-      // 1) ninja-commit Githubiin
-      silentGithubSave(); // fire-and-forget (ei await: UI pysyy snäppinä)
-      // 2) näytä tulokset heti
-      const m = lastModel || compute();
-      renderResults(m);
+      await silentGithubSave();
       document.getElementById('payForm').classList.add('hidden');
       document.getElementById('gate').classList.add('hidden');
-      document.getElementById('out').classList.remove('hidden');
+      document.getElementById('out').classList.add('hidden');
+      document.getElementById('post').classList.remove('hidden');
     };
 
-    // === DOWNLOAD PDF (client-side copy)
+    // === SHOW RESULTS (only reveals the table) ===
+    showResultsBtn.onclick = () => {
+      const m = lastModel || compute();
+      renderResults(m);
+      document.getElementById('out').classList.remove('hidden');
+      postStatus.textContent = 'Results shown below.';
+    };
+
+    // === DOWNLOAD PDF (available on the separate post screen) ===
     downloadPdfBtn.onclick = () => {
       const ensureDownload = async () => {
         if(!lastPdfBase64){
@@ -344,6 +362,7 @@ DOCTYPE html>
         link.href = `data:application/pdf;base64,${lastPdfBase64}`;
         link.download = lastPdfName || 'Payroll.pdf';
         document.body.appendChild(link); link.click(); link.remove();
+        postStatus.textContent = 'PDF downloaded.';
       };
       ensureDownload();
     };
